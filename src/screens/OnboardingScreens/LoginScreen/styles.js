@@ -1,0 +1,82 @@
+import {StyleSheet} from 'react-native';
+
+export const styles = StyleSheet.create({
+  body: {
+    flex: 1,
+    alignItems: 'center',
+    // justifyContent: 'space-around',
+    backgroundColor: '#f9f9f5',
+    width: '100%',
+    height: '100%',
+  },
+  background: {
+    width: '100%',
+    height: '100%',
+  },
+  header: {
+    color: '#000',
+    marginVertical: 60,
+    fontSize: 50,
+    fontWeight: 'bold',
+    // backgroundColor:'green'
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+  },
+  inputfiled: {
+    width: '85%',
+    borderColor: '#eeeeee',
+    borderWidth: 1,
+    height: 50,
+    marginBottom: 20,
+    backgroundColor: '#ffffff',
+    paddingLeft: 20,
+    borderRadius: 50,
+    color: '#000',
+  },
+  button: {
+    backgroundColor: '#20d5d8',
+    width: '85%',
+    borderColor: '#eeeeee',
+    borderWidth: 1,
+    height: 50,
+    color: '#fff',
+    alignContent: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+    paddingLeft: 20,
+    borderRadius: 50,
+  },
+  loginbtn: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  btnlabel: {
+    fontSize: 15,
+    // fontWeight: 'bold',
+    letterSpacing: 3,
+    color: '#fff',
+  },
+  textlabel: {
+    marginVertical: 20,
+    fontSize: 15,
+    color: '#000',
+  },
+  signbtn: {
+    width: 150,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    marginTop: 20,
+    borderRadius: 50,
+    borderColor: '#20d5d8',
+    backgroundColor: '#ffffff',
+  },
+  signuplabel: {
+    color: '#cacbcf',
+    backgroundColor: '#fff',
+    padding: 10,
+    position: 'absolute',
+    backgroundColor: '#f9f9f5',
+  },
+});
