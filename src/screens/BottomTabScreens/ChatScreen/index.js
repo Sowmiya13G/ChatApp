@@ -1,45 +1,74 @@
-import React, {useState, useCallback, useEffect} from 'react';
-import {GiftedChat} from 'react-native-gifted-chat';
+import React, { useState, useCallback, useEffect } from 'react';
+import { GiftedChat } from 'react-native-gifted-chat';
 import firestore from '@react-native-firebase/firestore';
+import { useRoute } from '@react-navigation/native';
 
-const ChatScreen = ({route}) => {
-  const {userID} = route.params;
+const ChatScreen = () => {
+  // const { userID } = route.params;
+  const route =useRoute()
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    const loadMessages = async () => {
-      const chatRef = firestore().collection('chats').doc(userID);
+    // const loadMessages = async () => {
+    //   const chatRef = firestore().collection('chats').doc(userID);
 
-      const unsubscribe = chatRef
-        .collection('messages')
-        .orderBy('createdAt', 'desc')
-        .onSnapshot(snapshot => {
-          const newMessages = snapshot.docs.map(doc => {
-            const data = doc.data();
-            return {
-              ...data,
-              createdAt: data.createdAt.toDate(),
-            };
-          });
-          setMessages(newMessages);
-        });
+    //   const unsubscribe = chatRef
+    //     .collection('messages')
+    //     .orderBy('createdAt', 'desc')
+    //     .onSnapshot(snapshot => {
+    //       const newMessages = snapshot.docs.map(doc => {
+    //         const data = doc.data();
+    //         return {
+    //           ...data,
+    //           createdAt: data.createdAt.toDate(),
+    //         };
+    //       });
+    //       setMessages(newMessages);
+    //     });
 
-      return () => unsubscribe();
-    };
+    //   return () => unsubscribe();
+    // }
 
-    loadMessages();
-  }, [userID]);
+
+    // loadMessages();
+const sub =firestore()
+.collection("chats").doc(route.params.id + route.params.data.userId)
+.collection("messages").orderBy("createdAt","desc");
+sub.onSnapshot(data=>{
+  const allmesg =data.docs.map(item=>{
+    return{...item,_data,createdAt: item._data.createdAt}
+  })
+  setMessages(allmesg)
+})
+return()=>sub()
+  }, []);
 
   const onSend = useCallback(
     async (messages = []) => {
-      const chatRef = firestore().collection('chats').doc(userID);
+      const msg = messages[0]
+      const myMSG = {
+        ...msg,
+        sendBy: route.params.id,
+        sendTo: route.params.data.userId,
+        createdAt: Date.parse(msg.createdAt),
 
-      await chatRef.collection('messages').add({
-        ...messages[0],
-        createdAt: new Date(),
-      });
+      }
+      firestore()
+      .collection('chats')
+      .doc("" + route.params.id + route.params.data.userId)
+      .collection("messages")
+      .add(myMSG);
+      firestore()
+      .collection('chats')
+      .doc("" + route.params.userId + route.params.data.id)
+      .collection("messages")
+      .add(myMSG);
+      // await chatRef.collection('messages').add({
+      //   ...messages[0],
+      //   createdAt: new Date(),
+      // });
     },
-    [userID],
+    [],
   );
 
   return (
@@ -47,7 +76,9 @@ const ChatScreen = ({route}) => {
       messages={messages}
       onSend={messages => onSend(messages)}
       user={{
-        _id: 'currentUserId',
+        _id: 1,
+        // _id: userID,
+
       }}
     />
   );
