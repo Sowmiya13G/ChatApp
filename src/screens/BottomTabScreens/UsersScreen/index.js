@@ -39,9 +39,12 @@ const UserScreen = () => {
     }
   };
 
-  // Navigation
-  const handleUserClick = userID => {
-    navigation.navigate('ChatScreen', {userID});
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const handleUserClick = item => {
+    navigation.navigate('ChatScreen', {data: item});
   };
 
   useEffect(() => {
@@ -57,7 +60,8 @@ const UserScreen = () => {
         data={users}
         keyExtractor={item => item.userID}
         renderItem={({item}) => (
-          <TouchableOpacity onPress={() => handleUserClick(item.userID)}>
+          <TouchableOpacity onPress={() => handleUserClick(item)}>
+            {console.log('fff', item)}
             <View>
               <Text style={{color: 'black'}}>{item.email}</Text>
             </View>
