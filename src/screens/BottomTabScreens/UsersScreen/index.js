@@ -44,7 +44,7 @@ const UserScreen = () => {
   }, []);
 
   const handleUserClick = item => {
-    navigation.navigate('ChatScreen', {data: item});
+    navigation.navigate('ChatScreen', {data: item, id: store[0].userID});
   };
 
   useEffect(() => {
