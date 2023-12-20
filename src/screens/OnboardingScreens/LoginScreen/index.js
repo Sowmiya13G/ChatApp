@@ -34,7 +34,8 @@ const LoginScreen = () => {
           console.log('Invalid credentials');
         } else {
           console.log('Login successful');
-          navigation.navigate('UserScreen');
+          console.log(snapshot.docs[0].data())
+          // navigation.navigate('UserScreen');
         }
       })
       .catch(error => {
