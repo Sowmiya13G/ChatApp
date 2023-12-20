@@ -49,7 +49,7 @@ const SignupScreen = () => {
       .then(resp => {
         console.log(resp);
         console.log('Signup successful');
-        navigation.navigate('UserScreen');
+        navigation.navigate('LoginScreen');
       })
       .catch(errr => {
         console.log('errr');

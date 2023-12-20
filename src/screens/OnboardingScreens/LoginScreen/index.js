@@ -7,7 +7,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import {setUserData} from "../../../redux/features/userSlice"
+import { setUserData } from "../../../redux/features/userSlice"
 // Packages
 import { useNavigation } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
@@ -19,9 +19,9 @@ const LoginScreen = () => {
   // variables
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const store = useSelector(state.users.userData)
+  const store = useSelector(state => state.users.userData)
 
-  console.log(store)
+  console.log("store", store)
   // Use State
   const [emailId, setEmailId] = useState('');
   const [password, setPassword] = useState('');
@@ -41,7 +41,7 @@ const LoginScreen = () => {
           console.log('Login successful');
           console.log(snapshot.docs[0].data())
           dispatch(setUserData(snapshot.docs[0].data()))
-          // navigation.navigate('UserScreen');
+          navigation.navigate('UserScreen');
         }
       })
       .catch(error => {
