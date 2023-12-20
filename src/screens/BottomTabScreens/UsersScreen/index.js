@@ -1,63 +1,65 @@
-import React, { useEffect, useState } from 'react';
-import { Text, View, FlatList, TouchableOpacity } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Text, View, FlatList, TouchableOpacity} from 'react-native';
+
+// Packages
+import {useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
-import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
+
+// Redux
+import {useSelector} from 'react-redux';
 
 const UserScreen = () => {
-  const [users, setUsers] = useState([]);
+  // Variables
   const navigation = useNavigation();
-  const store = useSelector(state => state.users.userData)
-  useEffect(() => {
-    // setUsers(store)
-  }, [])
 
+  // Use State
+  const [users, setUsers] = useState([]);
+
+  // Selectors
+  const store = useSelector(state => state.users.userData);
+
+  // Fucntions
   const fetchUsers = async () => {
-
     try {
-      const email = store[0].email
-      console.log(email)
-      const tempData = []
-      firestore().collection('users').where("email", "!=", email).get()
-        .then(resp => {
-          if (resp.docs != []) {
-            resp.docs.map((a) => tempData.push(a.data()))
-          }
-          setUsers(tempData)
-        }
-        )
-        ;
-      // const userList = usersSnapshot.docs.map(doc => ({
-      //   ...doc.data(),
-      //   id: doc.id,
-      // }));
+      const email = store[0].email;
+      const tempData = [];
 
-      // setUsers(userList);
+      firestore()
+        .collection('users')
+        .where('email', '!=', email)
+        .get()
+        .then(resp => {
+          resp.docs.forEach(doc => {
+            tempData.push(doc.data());
+          });
+          setUsers(tempData);
+        });
     } catch (error) {
       console.error('Error fetching users:', error);
     }
   };
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
+  // Navigation
   const handleUserClick = userID => {
-    navigation.navigate('ChatScreen', { userID });
+    navigation.navigate('ChatScreen', {userID});
   };
 
-  console.log("dsfs", users)
+  useEffect(() => {
+    fetchUsers();
+    //   // setUsers(store)
+  }, []);
+  console.log('dsfs', users);
 
+  // Render UI ...........
   return (
     <View>
       <FlatList
         data={users}
         keyExtractor={item => item.userID}
-        renderItem={({ item }) => (
+        renderItem={({item}) => (
           <TouchableOpacity onPress={() => handleUserClick(item.userID)}>
-            {console.log("fff", item)}
             <View>
-              <Text style={{ color: 'black' }}>{item.email}</Text>
+              <Text style={{color: 'black'}}>{item.email}</Text>
             </View>
           </TouchableOpacity>
         )}
@@ -67,3 +69,8 @@ const UserScreen = () => {
 };
 
 export default UserScreen;
+
+// const filteredUsers = users
+//   ? users.filter(user => user.email !== store[0].email)
+//   : [];
+// console.log('filteredUsers', filteredUsers);
