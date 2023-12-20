@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { ImageBackground, Image, Text, TextInput, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import React, {useState} from 'react';
+import {ImageBackground, Image, Text, TextInput, View} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import firestore from '@react-native-firebase/firestore';
 import uuid from 'react-native-uuid';
-import { styles } from './styles';
-const LoginScreen = () => {
-  const [name, setName] = useState("");
-  const [emailId, setEmailId] = useState("");
-  const [password, setPassword] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [confirmPassword, setconfirmPassword] = useState("")
+import {styles} from './styles';
+const SignupScreen = () => {
+  const [name, setName] = useState('');
+  const [emailId, setEmailId] = useState('');
+  const [password, setPassword] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [confirmPassword, setconfirmPassword] = useState('');
 
   const register = () => {
     const UserID = uuid.v4();
@@ -25,19 +25,20 @@ const LoginScreen = () => {
 
         userID: UserID,
       })
-      .then(resp => { console.log(resp) })
+      .then(resp => {
+        console.log(resp);
+      })
       .catch(errr => {
         // console.log(errr);
-        console.log("errr");
-
+        console.log('errr');
       });
   };
   return (
     <View style={styles.body}>
       <Text style={styles.header}>
-        Pik<Text style={[styles.header, { color: '#20d5d8' }]}>up</Text>
+        Pik<Text style={[styles.header, {color: '#20d5d8'}]}>up</Text>
       </Text>
-      
+
       <TextInput
         placeholder="email"
         placeholderTextColor={'grey'}
@@ -69,7 +70,7 @@ const LoginScreen = () => {
           <Text style={styles.btnlabel}>sign up</Text>
         </TouchableOpacity>
       </View>
-      <Text style={[styles.textlabel, { marginTop: 0 }]}>Forget Password?</Text>
+      <Text style={[styles.textlabel, {marginTop: 0}]}>Forget Password?</Text>
       <View
         style={{
           borderBottomWidth: 1,
@@ -91,14 +92,14 @@ const LoginScreen = () => {
           alignItems: 'flex-start',
         }}>
         <TouchableOpacity style={styles.signbtn}>
-          <Text style={{ color: '#20d5d8' }}>GOOGLE</Text>
+          <Text style={{color: '#20d5d8'}}>GOOGLE</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.signbtn}>
-          <Text style={{ color: '#20d5d8' }}>EMAIL</Text>
+          <Text style={{color: '#20d5d8'}}>EMAIL</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-export default LoginScreen;
+export default SignupScreen;

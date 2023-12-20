@@ -3,7 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {StatusBar, View} from 'react-native';
 import {BottomTabNavigator} from './TabNavigator';
-import LoginScreen from '../screens/OnboardingScreens/LoginScreen';
+import SignupScreen from '../screens/OnboardingScreens/SignupScreen';
 import ChatScreen from '../screens/BottomTabScreens/ChatScreen';
 // import {ThemeContext} from '../utils/themeContext';
 import commonImagePath from '../constants/images';
@@ -23,10 +23,10 @@ const AppNavigator = () => {
       /> */}
 
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={LoginScreen}>
+        <Stack.Navigator initialRouteName={SignupScreen}>
           <Stack.Screen
-            name="LoginScreen"
-            component={LoginScreen}
+            name="SignupScreen"
+            component={SignupScreen}
             options={{title: '', headerShown: false}}
           />
         </Stack.Navigator>
