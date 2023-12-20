@@ -37,6 +37,7 @@ const LoginScreen = () => {
       <Text style={styles.header}>
         Pik<Text style={[styles.header, { color: '#20d5d8' }]}>up</Text>
       </Text>
+      
       <TextInput
         placeholder="email"
         placeholderTextColor={'grey'}
