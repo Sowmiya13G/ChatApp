@@ -7,36 +7,17 @@ const ChatScreen = () => {
   // const { userID } = route.params;
   const route =useRoute()
   const [messages, setMessages] = useState([]);
+console.log("route",route)
+console.log("route",route.params.id)
 
   useEffect(() => {
-    // const loadMessages = async () => {
-    //   const chatRef = firestore().collection('chats').doc(userID);
 
-    //   const unsubscribe = chatRef
-    //     .collection('messages')
-    //     .orderBy('createdAt', 'desc')
-    //     .onSnapshot(snapshot => {
-    //       const newMessages = snapshot.docs.map(doc => {
-    //         const data = doc.data();
-    //         return {
-    //           ...data,
-    //           createdAt: data.createdAt.toDate(),
-    //         };
-    //       });
-    //       setMessages(newMessages);
-    //     });
-
-    //   return () => unsubscribe();
-    // }
-
-
-    // loadMessages();
 const sub =firestore()
-.collection("chats").doc(route.params.id + route.params.data.userId)
+.collection("chats").doc(route.params.id + route.params.data.userID)
 .collection("messages").orderBy("createdAt","desc");
 sub.onSnapshot(data=>{
   const allmesg =data.docs.map(item=>{
-    return{...item,_data,createdAt: item._data.createdAt}
+    return{...item._data,createdAt: item._data.createdAt}
   })
   setMessages(allmesg)
 })
@@ -49,18 +30,18 @@ return()=>sub()
       const myMSG = {
         ...msg,
         sendBy: route.params.id,
-        sendTo: route.params.data.userId,
+        sendTo: route.params.data.userID,
         createdAt: Date.parse(msg.createdAt),
 
       }
       firestore()
       .collection('chats')
-      .doc("" + route.params.id + route.params.data.userId)
+      .doc("" + route.params.id + route.params.data.userID)
       .collection("messages")
       .add(myMSG);
       firestore()
       .collection('chats')
-      .doc("" + route.params.userId + route.params.data.id)
+      .doc("" + route.params.data.userID + route.params.id)
       .collection("messages")
       .add(myMSG);
       // await chatRef.collection('messages').add({
@@ -76,8 +57,9 @@ return()=>sub()
       messages={messages}
       onSend={messages => onSend(messages)}
       user={{
-        _id: 1,
+        // _id: "currentId",
         // _id: userID,
+        _id:route.params.id
 
       }}
     />
