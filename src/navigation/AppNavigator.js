@@ -9,6 +9,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import SignupScreen from '../screens/OnboardingScreens/SignupScreen';
 import LoginScreen from '../screens/OnboardingScreens/LoginScreen';
 import ChatScreen from '../screens/BottomTabScreens/ChatScreen';
+import UserScreen from '../screens/BottomTabScreens/UsersScreen';
 // import {BottomTabNavigator} from './TabNavigator';
 
 // Constants
@@ -39,6 +40,11 @@ const AppNavigator = () => {
           <Stack.Screen
             name="LoginScreen"
             component={LoginScreen}
+            options={{title: '', headerShown: false}}
+          />
+          <Stack.Screen
+            name="UserScreen"
+            component={UserScreen}
             options={{title: '', headerShown: false}}
           />
           <Stack.Screen

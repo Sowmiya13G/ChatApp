@@ -34,7 +34,7 @@ const LoginScreen = () => {
           console.log('Invalid credentials');
         } else {
           console.log('Login successful');
-          navigation.navigate('ChatScreen');
+          navigation.navigate('UserScreen');
         }
       })
       .catch(error => {
