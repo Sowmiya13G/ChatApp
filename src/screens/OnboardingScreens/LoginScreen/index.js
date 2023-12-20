@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Text,
   TextInput,
@@ -6,21 +6,26 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-
+import { useDispatch, useSelector } from 'react-redux';
+import {setUserData} from "../../../redux/features/userSlice"
 // Packages
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 
 // Styles
-import {styles} from './styles';
+import { styles } from './styles';
 
 const LoginScreen = () => {
+  // variables
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const store = useSelector(state.users.userData)
+
+  console.log(store)
   // Use State
   const [emailId, setEmailId] = useState('');
   const [password, setPassword] = useState('');
 
-  // variables
-  const navigation = useNavigation();
 
   // Functions
   const login = () => {
@@ -35,6 +40,7 @@ const LoginScreen = () => {
         } else {
           console.log('Login successful');
           console.log(snapshot.docs[0].data())
+          dispatch(setUserData(snapshot.docs[0].data()))
           // navigation.navigate('UserScreen');
         }
       })
@@ -47,7 +53,7 @@ const LoginScreen = () => {
   return (
     <View style={styles.body}>
       <Text style={styles.header}>
-        Pik<Text style={[styles.header, {color: '#20d5d8'}]}>up</Text>
+        Pik<Text style={[styles.header, { color: '#20d5d8' }]}>up</Text>
       </Text>
 
       <TextInput
@@ -70,7 +76,7 @@ const LoginScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <Text style={[styles.textlabel, {marginTop: 0}]}>Forget Password?</Text>
+      <Text style={[styles.textlabel, { marginTop: 0 }]}>Forget Password?</Text>
     </View>
   );
 };
