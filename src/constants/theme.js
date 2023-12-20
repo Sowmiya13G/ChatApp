@@ -15,11 +15,13 @@ const backgroundColor = {
   primary: '#FAFAFA',
   gray: '#CCCCCC',
   lightGray: '#E5E4E2',
+  themeBG: '#f9f9f5',
 };
 
 const borderColor = {
   white: '#FFFFFF',
   black: '#000000',
+  candyBlue: '#eeeeee',
 };
 const fontSizes = {
   bigFont: hp('3%'),

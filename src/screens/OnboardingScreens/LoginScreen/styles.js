@@ -16,10 +16,7 @@ export const styles = StyleSheet.create({
   body: {
     flex: 1,
     alignItems: 'center',
-    // justifyContent: 'space-around',
     backgroundColor: theme.backgroundColor.themeBG,
-    width: '100%',
-    height: '100%',
   },
   background: {
     width: '100%',
@@ -51,7 +48,7 @@ export const styles = StyleSheet.create({
     borderColor: theme.borderColor.candyBlue,
     borderWidth: 1,
     height: 50,
-    color: theme.fontColors.white,
+    color: '#fff',
     alignContent: 'center',
     justifyContent: 'center',
     marginBottom: 20,
@@ -90,21 +87,5 @@ export const styles = StyleSheet.create({
     padding: 10,
     position: 'absolute',
     backgroundColor: '#f9f9f5',
-  },
-  buttonConatiner: {
-    width: '80%',
-    justifyContent: 'space-around',
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-  },
-  signUp: {
-    borderBottomWidth: 1,
-    marginTop: 20,
-    marginBottom: 10,
-    borderStyle: 'solid',
-    borderColor: '#cacbcf',
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });

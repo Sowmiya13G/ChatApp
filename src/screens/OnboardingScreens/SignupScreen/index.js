@@ -1,16 +1,38 @@
 import React, {useState} from 'react';
-import {ImageBackground, Image, Text, TextInput, View} from 'react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {
+  ImageBackground,
+  Image,
+  Text,
+  TextInput,
+  View,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
+
+// Packages
 import firestore from '@react-native-firebase/firestore';
 import uuid from 'react-native-uuid';
+import {useNavigation} from '@react-navigation/native';
+
+// Styles
 import {styles} from './styles';
+
+// Components
+import CommonButton from '../../../components/CommonButton';
+import Spacer from '../../../components/Spacer/index';
+
 const SignupScreen = () => {
+  // Variables
+  const navigation = useNavigation();
+
+  // Use State
   const [name, setName] = useState('');
   const [emailId, setEmailId] = useState('');
   const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [confirmPassword, setconfirmPassword] = useState('');
 
+  // Functions
   const register = () => {
     const UserID = uuid.v4();
     firestore()
@@ -22,17 +44,23 @@ const SignupScreen = () => {
         phoneNumber: phoneNumber,
         password: password,
         confirmPassword: confirmPassword,
-
         userID: UserID,
       })
       .then(resp => {
         console.log(resp);
+        console.log('Signup successful');
+        navigation.navigate('ChatScreen');
       })
       .catch(errr => {
-        // console.log(errr);
         console.log('errr');
       });
   };
+
+  const goToLogin = () => {
+    navigation.navigate('LoginScreen');
+  };
+
+  // render UI ........
   return (
     <View style={styles.body}>
       <Text style={styles.header}>
@@ -65,32 +93,15 @@ const SignupScreen = () => {
         style={styles.inputfiled}
         onChangeText={value => setconfirmPassword(value)}></TextInput>
 
-      <View style={styles.button}>
-        <TouchableOpacity style={styles.loginbtn} onPress={register}>
-          <Text style={styles.btnlabel}>sign up</Text>
-        </TouchableOpacity>
+      <View style={styles.buttonConatiner}>
+        <CommonButton logInButton label="SIGN UP" handlePress={register} />
+        <CommonButton logInButton label="LOG IN" handlePress={goToLogin} />
       </View>
       <Text style={[styles.textlabel, {marginTop: 0}]}>Forget Password?</Text>
-      <View
-        style={{
-          borderBottomWidth: 1,
-          marginTop: 20,
-          marginBottom: 10,
-          borderStyle: 'solid',
-          borderColor: '#cacbcf',
-          width: '100%',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
+      <View style={styles.signUp}>
         <Text style={styles.signuplabel}>Sign up With</Text>
       </View>
-      <View
-        style={{
-          width: '80%',
-          justifyContent: 'space-around',
-          flexDirection: 'row',
-          alignItems: 'flex-start',
-        }}>
+      <View style={styles.buttonConatiner}>
         <TouchableOpacity style={styles.signbtn}>
           <Text style={{color: '#20d5d8'}}>GOOGLE</Text>
         </TouchableOpacity>
