@@ -6,7 +6,10 @@ import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {widthPercentageToDP} from 'react-native-responsive-screen';
+import {
+  heightPercentageToDP,
+  widthPercentageToDP,
+} from 'react-native-responsive-screen';
 
 // Redux
 import {useSelector} from 'react-redux';
@@ -78,6 +81,11 @@ const UserScreen = () => {
     return `rgb(${r}, ${g}, ${b})`;
   };
 
+  // navigation
+  const goToProfile = () => {
+    navigation.navigate('SettingsScreen');
+  };
+
   return (
     <View
       style={[
@@ -140,36 +148,31 @@ const UserScreen = () => {
               <Icon
                 name="user"
                 size={20}
-                color={
-                  isDarkMode ? theme.fontColors.white : theme.fontColors.black
-                }
+                color={theme.fontColors.black}
                 style={styles.icon}
               />
             </TouchableOpacity>
+            <Spacer height={heightPercentageToDP('2%')} />
             <TouchableOpacity
               style={styles.addNewUser}
               onPress={() => console.log('User Profile')}>
               <Icon
                 name="user-plus"
                 size={20}
-                color={
-                  isDarkMode ? theme.fontColors.white : theme.fontColors.black
-                }
+                color={theme.fontColors.black}
                 style={styles.icon}
               />
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.addNewUser}
-              onPress={() => console.log('Save')}>
+            <Spacer height={heightPercentageToDP('2%')} />
+            <TouchableOpacity style={styles.addNewUser} onPress={goToProfile}>
               <Icon
-                name="plus"
+                name="gear"
                 size={20}
-                color={
-                  isDarkMode ? theme.fontColors.white : theme.fontColors.black
-                }
+                color={theme.fontColors.black}
                 style={styles.icon}
               />
             </TouchableOpacity>
+            <Spacer height={heightPercentageToDP('2%')} />
           </View>
         ) : null}
         <TouchableOpacity
@@ -179,7 +182,7 @@ const UserScreen = () => {
           <Icon
             name="gears"
             size={20}
-            color={isDarkMode ? theme.fontColors.white : theme.fontColors.black}
+            color={theme.fontColors.black}
             style={styles.icon}
           />
         </TouchableOpacity>

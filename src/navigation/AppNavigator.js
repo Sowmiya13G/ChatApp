@@ -12,6 +12,7 @@ import SignupScreen from '../screens/OnboardingScreens/SignupScreen';
 import LoginScreen from '../screens/OnboardingScreens/LoginScreen';
 import ChatScreen from '../screens/BottomTabScreens/ChatScreen';
 import UserScreen from '../screens/BottomTabScreens/UsersScreen';
+import SettingsScreen from '../screens/BottomTabScreens/SettingsScreen';
 
 // Navigators
 import {BottomTabNavigator} from './TabNavigator';
@@ -68,6 +69,11 @@ const AppNavigator = () => {
             name="ChatScreen"
             component={ChatScreen}
             options={{title: Name ? Name : phoneNumber, headerShown: true}}
+          />
+          <Stack.Screen
+            name="SettingsScreen"
+            component={SettingsScreen}
+            options={{title: '', headerShown: false}}
           />
         </Stack.Navigator>
       </NavigationContainer>
