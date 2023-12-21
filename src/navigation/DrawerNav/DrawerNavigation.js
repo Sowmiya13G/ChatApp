@@ -17,6 +17,7 @@ import SettingsScreen from '../../screens/BottomTabScreens/SettingsScreen';
 // Constanst
 import theme from '../../constants/theme';
 import {ThemeContext} from '../../utils/themeContext';
+import UserScreen from '../../screens/BottomTabScreens/UsersScreen';
 
 const DrawerNavigator = () => {
   // variables
@@ -56,7 +57,7 @@ const DrawerNavigator = () => {
       })}>
       <Drawer.Screen
         name="Home"
-        component={BottomTabNavigator}
+        component={UserScreen}
         options={{
           title: '',
         }}

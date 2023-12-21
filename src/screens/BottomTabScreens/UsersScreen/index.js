@@ -6,6 +6,7 @@ import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {widthPercentageToDP} from 'react-native-responsive-screen';
 
 // Redux
 import {useSelector} from 'react-redux';
@@ -15,17 +16,21 @@ import Avatar from '../../../assets/Imags/avatar.webp';
 import theme from '../../../constants/theme';
 import {ThemeContext} from '../../../utils/themeContext';
 
+// Components
+import Spacer from '../../../components/Spacer';
+
 // Styles
 import {styles} from './styles';
 
 const UserScreen = () => {
   // Variables
   const navigation = useNavigation();
-  const isDarkMode = useContext(ThemeContext);
+  const {isDarkMode} = useContext(ThemeContext);
   fontTheme = isDarkMode ? theme.fontColors.white : theme.fontColors.black;
 
   // Use State
   const [users, setUsers] = useState([]);
+  const [showIcons, setShowIcons] = useState(false);
 
   // Selectors
   const store = useSelector(state => state.users.userData);
@@ -60,7 +65,10 @@ const UserScreen = () => {
   };
 
   console.log('dsfs', users);
-  const handleAddNewUserClick = () => {};
+  const handleAddNewUserClick = () => {
+    console.log('ahsdgk');
+    setShowIcons(!showIcons);
+  };
 
   const getRandomLightMatteColor = () => {
     const getRandomComponent = () => Math.floor(Math.random() * 290);
@@ -100,9 +108,7 @@ const UserScreen = () => {
                   style={[
                     styles.text,
                     {
-                      color: isDarkMode
-                        ? theme.fontColors.white
-                        : theme.fontColors.black,
+                      color: 'black',
                     },
                   ]}>
                   {item.name.slice(0, 1)}
@@ -110,14 +116,13 @@ const UserScreen = () => {
               </LinearGradient>
               {/* </View> */}
             </View>
+            <Spacer width={widthPercentageToDP('2%')} />
             <View>
               <Text
                 style={[
                   styles.text,
                   {
-                    color: isDarkMode
-                      ? theme.fontColors.white
-                      : theme.fontColors.black,
+                    color: fontTheme,
                   },
                 ]}>
                 {item.name}
@@ -126,17 +131,59 @@ const UserScreen = () => {
           </TouchableOpacity>
         )}
       />
-      <TouchableOpacity
-        style={[styles.addNewUser]}
-        onPress={handleAddNewUserClick}
-        activeOpacity={0.7}>
-        <Icon
-          name="user-plus"
-          size={20}
-          color={isDarkMode ? theme.fontColors.white : theme.fontColors.black}
-          style={styles.icon}
-        />
-      </TouchableOpacity>
+      <View style={styles.iconsContainer}>
+        {showIcons ? (
+          <View style={styles.iconContainer}>
+            <TouchableOpacity
+              style={styles.addNewUser}
+              onPress={() => console.log('Edit')}>
+              <Icon
+                name="user"
+                size={20}
+                color={
+                  isDarkMode ? theme.fontColors.white : theme.fontColors.black
+                }
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.addNewUser}
+              onPress={() => console.log('User Profile')}>
+              <Icon
+                name="user-plus"
+                size={20}
+                color={
+                  isDarkMode ? theme.fontColors.white : theme.fontColors.black
+                }
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.addNewUser}
+              onPress={() => console.log('Save')}>
+              <Icon
+                name="plus"
+                size={20}
+                color={
+                  isDarkMode ? theme.fontColors.white : theme.fontColors.black
+                }
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+          </View>
+        ) : null}
+        <TouchableOpacity
+          style={[styles.addNewUser]}
+          onPress={handleAddNewUserClick}
+          activeOpacity={0.7}>
+          <Icon
+            name="gears"
+            size={20}
+            color={isDarkMode ? theme.fontColors.white : theme.fontColors.black}
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
