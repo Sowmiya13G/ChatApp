@@ -2,8 +2,11 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat';
 import firestore from '@react-native-firebase/firestore';
 import { useRoute } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+import { ToDetails } from '../../../redux/features/userSlice';
 
 const ChatScreen = () => {
+  const dispatch=useDispatch()
   // const { userID } = route.params;
   const route =useRoute()
   const [messages, setMessages] = useState([]);
@@ -44,21 +47,21 @@ return()=>sub()
       .doc("" + route.params.data.userID + route.params.id)
       .collection("messages")
       .add(myMSG);
-      // await chatRef.collection('messages').add({
-      //   ...messages[0],
-      //   createdAt: new Date(),
-      // });
+  
     },
     [],
   );
 
+  useEffect(()=>{
+dispatch(ToDetails(route))
+  },[route])
+  // console.log(messages)
   return (
     <GiftedChat
       messages={messages}
       onSend={messages => onSend(messages)}
       user={{
-        // _id: "currentId",
-        // _id: userID,
+   
         _id:route.params.id
 
       }}
@@ -67,68 +70,3 @@ return()=>sub()
 };
 
 export default ChatScreen;
-
-// import React, {useState, useEffect} from 'react';
-// import {View, Text, TextInput, Button} from 'react-native';
-// import auth from '@react-native-firebase/auth';
-// import database from '@react-native-firebase/database';
-
-// const ChatScreen = () => {
-//   const [messages, setMessages] = useState([]);
-//   const [newMessage, setNewMessage] = useState('');
-
-//   useEffect(() => {
-//     const messagesRef = database().ref('/messages');
-
-//     const onSnapshot = (snapshot) => {
-//       const data = snapshot.val();
-//       if (data) {
-//         const messagesArray = Object.keys(data).map((key) => ({
-//           ...data[key],
-//           id: key,
-//         }));
-//         setMessages(messagesArray);
-//       }
-//     };
-
-//     messagesRef.on('value', onSnapshot);
-
-//     return () => {
-//       messagesRef.off('value', onSnapshot);
-//     };
-//   }, []);
-
-//   const sendMessage = () => {
-//     const user = auth().currentUser;
-
-//     if (user) {
-//       database().ref('/messages').push({
-//         text: newMessage,
-//         user: {
-//           id: user.uid,
-//           name: user.displayName,
-//         },
-//       });
-//       setNewMessage('');
-//     }
-//   };
-
-//   return (
-//     <View>
-//       <Text>HIHI</Text>
-// {messages.map((msg) => (
-//     <Text key={msg.id}>
-//       {msg.user.name}: {msg.text}
-//     </Text>
-//   ))}
-//   <TextInput
-//     value={newMessage}
-//     onChangeText={(text) => setNewMessage(text)}
-//     placeholder="Type your message..."
-//   />
-//   <Button title="Send" onPress={sendMessage} />
-//     </View>
-//   );
-// };
-
-// export default ChatScreen;
