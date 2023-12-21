@@ -16,6 +16,7 @@ const backgroundColor = {
   gray: '#CCCCCC',
   lightGray: '#E5E4E2',
   themeBG: '#f9f9f5',
+  candyBlue: '#37ECBA',
 };
 
 const borderColor = {

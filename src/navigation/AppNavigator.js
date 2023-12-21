@@ -1,41 +1,47 @@
-import React, { useContext } from 'react';
-import { StatusBar, View } from 'react-native';
+import 'react-native-gesture-handler';
+
+import React, {useContext} from 'react';
+import {StatusBar, View} from 'react-native';
 
 // Packages
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 
 // Screens
 import SignupScreen from '../screens/OnboardingScreens/SignupScreen';
 import LoginScreen from '../screens/OnboardingScreens/LoginScreen';
 import ChatScreen from '../screens/BottomTabScreens/ChatScreen';
 import UserScreen from '../screens/BottomTabScreens/UsersScreen';
-// import {BottomTabNavigator} from './TabNavigator';
+import {BottomTabNavigator} from './TabNavigator';
 
 // Constants
 import theme from '../constants/theme';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 
 // Utils
-// import {ThemeContext} from '../utils/themeContext';
+import {ThemeContext} from '../utils/themeContext';
 
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
-  const toData = useSelector(state => state.users.ToDetails)
-  const userData = useSelector(state => state.users.userData)
+  const toData = useSelector(state => state.users.ToDetails);
+  const userData = useSelector(state => state.users.userData);
 
+  const isDarkMode = useContext(ThemeContext);
 
-  // const {isDarkMode} = useContext(ThemeContext);
-  console.log("name", userData)
-  const Name = toData?.params?.data?.name
-  const phoneNumber = toData?.params?.data?.phoneNumber
+  console.log('name', userData);
+  const Name = toData?.params?.data?.name;
+  const phoneNumber = toData?.params?.data?.phoneNumber;
   const initialRouteName = userData.length > 0 ? 'UserScreen' : 'SignupScreen';
   return (
-    <View style={{ flex: 1,backgroundColor:"#000" }}>
+    <View style={{flex: 1, backgroundColor: '#000'}}>
       <StatusBar
-        backgroundColor={theme.backgroundColor.themeBG}
-        barStyle={'dark-content'}
+        backgroundColor={
+          isDarkMode
+            ? theme.backgroundColor.black
+            : theme.backgroundColor.themeBG
+        }
+        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
       />
 
       <NavigationContainer>
@@ -43,22 +49,22 @@ const AppNavigator = () => {
           <Stack.Screen
             name="SignupScreen"
             component={SignupScreen}
-            options={{ title: '', headerShown: false }}
+            options={{title: '', headerShown: false}}
           />
           <Stack.Screen
             name="LoginScreen"
             component={LoginScreen}
-            options={{ title: '', headerShown: false }}
+            options={{title: '', headerShown: false}}
           />
           <Stack.Screen
             name="UserScreen"
-            component={UserScreen}
-            options={{ title: '', headerShown: false }}
+            component={BottomTabNavigator}
+            options={{title: '', headerShown: false}}
           />
           <Stack.Screen
             name="ChatScreen"
             component={ChatScreen}
-            options={{ title: Name ? Name : phoneNumber, headerShown: true }}
+            options={{title: Name ? Name : phoneNumber, headerShown: true}}
           />
         </Stack.Navigator>
       </NavigationContainer>
