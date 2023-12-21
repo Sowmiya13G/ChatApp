@@ -27,7 +27,7 @@ const AppNavigator = () => {
   const toData = useSelector(state => state.users.ToDetails);
   const userData = useSelector(state => state.users.userData);
 
-  const isDarkMode = useContext(ThemeContext);
+  const {isDarkMode} = useContext(ThemeContext);
 
   console.log('name', userData);
   const Name = toData?.params?.data?.name;
@@ -38,7 +38,7 @@ const AppNavigator = () => {
       <StatusBar
         backgroundColor={
           isDarkMode
-            ? theme.backgroundColor.black
+            ? theme.backgroundColor.dark
             : theme.backgroundColor.themeBG
         }
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}

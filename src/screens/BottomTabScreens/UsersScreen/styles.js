@@ -10,14 +10,14 @@ import {
 import theme from '../../../constants/theme';
 
 export const styles = StyleSheet.create({
-  body: {
+  container: {
     flex: 1,
   },
   chatList: {
     flex: 1,
-    flexDirection: 'row', // Assuming you want a horizontal layout
-    alignItems: 'center', // Align items vertically in the center
-    padding: 10, // Add padding for better spacing
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
     borderRadius: 2,
     backgroundColor: 'grey',
     marginVertical: 1,
@@ -40,6 +40,13 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     bottom: '10%',
-    right: 5,
+    right: '5%',
+  },
+  text: {
+    fontSize: theme.fontSizes.mediumFont,
+  },
+  icon: {
+    alignSelf: 'center',
+    justifyContent: 'center',
   },
 });

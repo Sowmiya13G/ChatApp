@@ -1,16 +1,28 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {Text, View, FlatList, TouchableOpacity, Image} from 'react-native';
+
+// Packages
 import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
+import LinearGradient from 'react-native-linear-gradient';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+// Redux
 import {useSelector} from 'react-redux';
+
+// constants
 import Avatar from '../../../assets/Imags/avatar.webp';
+import theme from '../../../constants/theme';
+import {ThemeContext} from '../../../utils/themeContext';
+
 // Styles
 import {styles} from './styles';
-import LinearGradient from 'react-native-linear-gradient';
 
 const UserScreen = () => {
   // Variables
   const navigation = useNavigation();
+  const isDarkMode = useContext(ThemeContext);
+  fontTheme = isDarkMode ? theme.fontColors.white : theme.fontColors.black;
 
   // Use State
   const [users, setUsers] = useState([]);
@@ -48,9 +60,7 @@ const UserScreen = () => {
   };
 
   console.log('dsfs', users);
-  const handleAddNewUserClick = () => {
-    // Handle the click event here
-  };
+  const handleAddNewUserClick = () => {};
 
   const getRandomLightMatteColor = () => {
     const getRandomComponent = () => Math.floor(Math.random() * 290);
@@ -61,7 +71,15 @@ const UserScreen = () => {
   };
 
   return (
-    <View style={[styles.body]}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: isDarkMode
+            ? theme.backgroundColor.dark
+            : theme.backgroundColor.themeBG,
+        },
+      ]}>
       <FlatList
         data={users}
         keyExtractor={item => item.userID}
@@ -78,12 +96,32 @@ const UserScreen = () => {
                   styles.avatar,
                   {backgroundColor: getRandomLightMatteColor()},
                 ]}>
-                <Text style={{color: 'black'}}>{item.name.slice(0, 1)}</Text>
+                <Text
+                  style={[
+                    styles.text,
+                    {
+                      color: isDarkMode
+                        ? theme.fontColors.white
+                        : theme.fontColors.black,
+                    },
+                  ]}>
+                  {item.name.slice(0, 1)}
+                </Text>
               </LinearGradient>
               {/* </View> */}
             </View>
             <View>
-              <Text style={{color: 'black'}}>{item.name}</Text>
+              <Text
+                style={[
+                  styles.text,
+                  {
+                    color: isDarkMode
+                      ? theme.fontColors.white
+                      : theme.fontColors.black,
+                  },
+                ]}>
+                {item.name}
+              </Text>
             </View>
           </TouchableOpacity>
         )}
@@ -91,9 +129,13 @@ const UserScreen = () => {
       <TouchableOpacity
         style={[styles.addNewUser]}
         onPress={handleAddNewUserClick}
-        activeOpacity={0.7} // Adjust the opacity during touch
-      >
-        <Text style={{fontSize: 20, fontWeight: '500'}}>+</Text>
+        activeOpacity={0.7}>
+        <Icon
+          name="user-plus"
+          size={20}
+          color={isDarkMode ? theme.fontColors.white : theme.fontColors.black}
+          style={styles.icon}
+        />
       </TouchableOpacity>
     </View>
   );

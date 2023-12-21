@@ -9,17 +9,23 @@ import theme from '../constants/theme';
 const Tab = createBottomTabNavigator();
 
 export const BottomTabNavigator = () => {
-  //   const {isDarkMode} = useContext(ThemeContext);
+  const {isDarkMode} = useContext(ThemeContext);
 
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
         tabBarVisible: route.params?.tabBarVisible ?? true,
-        tabBarActiveTintColor: theme.fontColors.white,
-        tabBarInactiveTintColor: theme.fontColors.black,
+        tabBarActiveTintColor: isDarkMode
+          ? theme.fontColors.white
+          : theme.fontColors.white,
+        tabBarInactiveTintColor: isDarkMode
+          ? theme.fontColors.black
+          : theme.fontColors.hexGray,
         default: true,
         tabBarStyle: {
-          backgroundColor: theme.backgroundColor.gray,
+          backgroundColor: isDarkMode
+            ? theme.backgroundColor.gray
+            : theme.backgroundColor.secondaryBlack,
           borderTopRightRadius: 25,
           borderTopLeftRadius: 25,
           position: 'absolute',
@@ -47,7 +53,7 @@ export const BottomTabNavigator = () => {
           title: '',
           headerShown: false,
           tabBarIcon: ({color, focused}) => (
-            <Icon name="gear" size={focused ? 35 : 25} color={color} />
+            <Icon name="gears" size={focused ? 35 : 25} color={color} />
           ),
         }}
       />
