@@ -97,22 +97,6 @@ const SettingsScreen = () => {
             : theme.backgroundColor.themeBG,
         },
       ]}>
-      <View style={styles.toggleContainer}>
-        <Switch
-          value={isDarkMode}
-          onValueChange={toggleTheme}
-          thumbColor={
-            isDarkMode
-              ? theme.backgroundColor.white
-              : theme.backgroundColor.dark
-          }
-          trackColor={
-            isDarkMode
-              ? theme.backgroundColor.white
-              : theme.backgroundColor.dark
-          }
-        />
-      </View>
       <Spacer height={hp('3%')} />
 
       <View style={styles.profileConatiner}>

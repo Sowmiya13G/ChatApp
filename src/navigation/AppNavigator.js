@@ -12,7 +12,10 @@ import SignupScreen from '../screens/OnboardingScreens/SignupScreen';
 import LoginScreen from '../screens/OnboardingScreens/LoginScreen';
 import ChatScreen from '../screens/BottomTabScreens/ChatScreen';
 import UserScreen from '../screens/BottomTabScreens/UsersScreen';
+
+// Navigators
 import {BottomTabNavigator} from './TabNavigator';
+import DrawerNavigator from './DrawerNav/DrawerNavigation';
 
 // Constants
 import theme from '../constants/theme';
@@ -58,7 +61,7 @@ const AppNavigator = () => {
           />
           <Stack.Screen
             name="UserScreen"
-            component={BottomTabNavigator}
+            component={DrawerNavigator}
             options={{title: '', headerShown: false}}
           />
           <Stack.Screen
