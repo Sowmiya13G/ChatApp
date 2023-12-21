@@ -69,4 +69,18 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 5,
   },
+  header: {
+    padding: '5%',
+    // flexDirection: 'row',
+    alignItems: 'center',
+  },
+  backIcon: {
+    alignSelf: 'flex-start',
+  },
+  title: {
+    color: theme.fontColors.secondaryBlack,
+    fontSize: theme.fontSizes.bigFont,
+    fontWeight: 'bold',
+    alignSelf: 'center',
+  },
 });

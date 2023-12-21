@@ -1,7 +1,7 @@
-import { configureStore } from '@reduxjs/toolkit';
+import {configureStore} from '@reduxjs/toolkit';
 import usersReducer from './features/userSlice';
-import { persistStore, persistReducer } from 'redux-persist';
-import { combineReducers } from 'redux';
+import {persistStore, persistReducer} from 'redux-persist';
+import {combineReducers} from 'redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const persistConfig = {
@@ -18,7 +18,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
+  middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST'],

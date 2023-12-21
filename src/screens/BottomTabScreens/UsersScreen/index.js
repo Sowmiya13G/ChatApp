@@ -86,6 +86,71 @@ const UserScreen = () => {
     navigation.navigate('SettingsScreen');
   };
 
+  // Render UI.......
+
+  // Render header
+  renderHeader = () => {
+    return (
+      <View
+        style={[
+          styles.header,
+          {
+            backgroundColor: isDarkMode
+              ? theme.backgroundColor.dark
+              : theme.backgroundColor.themeBG,
+          },
+        ]}>
+        {/* <TouchableOpacity onPress={() => goBack()} style={styles.backIcon}>
+          <Icon name="angle-left" size={30} color={theme.fontColors.black} />
+        </TouchableOpacity> */}
+        <Text style={styles.title}>PikUp</Text>
+      </View>
+    );
+  };
+
+  renderBody = ({item}) => {
+    return (
+      <View>
+        <TouchableOpacity
+          style={[styles.chatList]}
+          onPress={() => handleUserClick(item)}>
+          <View>
+            {/* <Image source={Avatar} style={[styles.avatar]} alt='avatar' /> */}
+            {/* <View style={[styles.avatar,{backgroundColor:getRandomLightMatteColor()}]}> */}
+            <LinearGradient
+              colors={['#fefefe', getRandomLightMatteColor()]}
+              style={[
+                styles.avatar,
+                {backgroundColor: getRandomLightMatteColor()},
+              ]}>
+              <Text
+                style={[
+                  styles.text,
+                  {
+                    color: 'black',
+                  },
+                ]}>
+                {item.name.slice(0, 1)}
+              </Text>
+            </LinearGradient>
+            {/* </View> */}
+          </View>
+          <Spacer width={widthPercentageToDP('2%')} />
+          <View>
+            <Text
+              style={[
+                styles.text,
+                {
+                  color: fontTheme,
+                },
+              ]}>
+              {item.name}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+  };
   return (
     <View
       style={[
@@ -99,45 +164,8 @@ const UserScreen = () => {
       <FlatList
         data={users}
         keyExtractor={item => item.userID}
-        renderItem={({item}) => (
-          <TouchableOpacity
-            style={[styles.chatList]}
-            onPress={() => handleUserClick(item)}>
-            <View>
-              {/* <Image source={Avatar} style={[styles.avatar]} alt='avatar' /> */}
-              {/* <View style={[styles.avatar,{backgroundColor:getRandomLightMatteColor()}]}> */}
-              <LinearGradient
-                colors={['#fefefe', getRandomLightMatteColor()]}
-                style={[
-                  styles.avatar,
-                  {backgroundColor: getRandomLightMatteColor()},
-                ]}>
-                <Text
-                  style={[
-                    styles.text,
-                    {
-                      color: 'black',
-                    },
-                  ]}>
-                  {item.name.slice(0, 1)}
-                </Text>
-              </LinearGradient>
-              {/* </View> */}
-            </View>
-            <Spacer width={widthPercentageToDP('2%')} />
-            <View>
-              <Text
-                style={[
-                  styles.text,
-                  {
-                    color: fontTheme,
-                  },
-                ]}>
-                {item.name}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        )}
+        renderItem={renderBody}
+        ListHeaderComponent={renderHeader()}
       />
       <View style={styles.iconsContainer}>
         {showIcons ? (

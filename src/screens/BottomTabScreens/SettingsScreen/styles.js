@@ -12,6 +12,9 @@ import theme from '../../../constants/theme';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: Platform.OS === 'android' ? 0 : 0,
+  },
+  bodyContainer: {
     padding: '5%',
   },
   text: {
@@ -29,13 +32,15 @@ export const styles = StyleSheet.create({
   },
   profileConatiner: {
     flexDirection: 'row',
-    // justifyContent: 'space-around',
     alignItems: 'center',
   },
-  icon: {},
-  profileImage: {
-    // width: wp('90%'),
-    // padding: '10%',
+  icon: {
+    borderRadius: wp('25%'),
+  },
+  profile: {
+    width: wp('25%'),
+    height: hp('12%'),
+    borderRadius: wp('25%'),
   },
   details: {},
   editIcon: {
@@ -60,5 +65,19 @@ export const styles = StyleSheet.create({
     color: theme.fontColors.black,
     fontSize: theme.fontSizes.mediumFont,
     alignSelf: 'center',
+  },
+  header: {
+    padding: '5%',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  backIcon: {
+    alignSelf: 'flex-start',
+  },
+  title: {
+    color: theme.fontColors.secondaryBlack,
+    fontSize: theme.fontSizes.bigFont,
+    fontWeight: 'bold',
+    paddingLeft: '33%',
   },
 });
