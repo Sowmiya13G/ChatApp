@@ -6,6 +6,7 @@ import {useSelector} from 'react-redux';
 import Avatar from '../../../assets/Imags/avatar.webp';
 // Styles
 import {styles} from './styles';
+import LinearGradient from 'react-native-linear-gradient';
 
 const UserScreen = () => {
   // Variables
@@ -52,10 +53,10 @@ const UserScreen = () => {
   };
 
   const getRandomLightMatteColor = () => {
-    const getRandomLightValue = () => Math.floor(Math.random() * 100) + 155; // Bias towards higher values
-    const r = getRandomLightValue();
-    const g = getRandomLightValue();
-    const b = getRandomLightValue();
+    const getRandomComponent = () => Math.floor(Math.random() * 290);
+    const r = getRandomComponent();
+    const g = getRandomComponent();
+    const b = getRandomComponent();
     return `rgb(${r}, ${g}, ${b})`;
   };
 
@@ -70,13 +71,16 @@ const UserScreen = () => {
             onPress={() => handleUserClick(item)}>
             <View>
               {/* <Image source={Avatar} style={[styles.avatar]} alt='avatar' /> */}
-              <View
+              {/* <View style={[styles.avatar,{backgroundColor:getRandomLightMatteColor()}]}> */}
+              <LinearGradient
+                colors={['#fefefe', getRandomLightMatteColor()]}
                 style={[
                   styles.avatar,
                   {backgroundColor: getRandomLightMatteColor()},
                 ]}>
                 <Text style={{color: 'black'}}>{item.name.slice(0, 1)}</Text>
-              </View>
+              </LinearGradient>
+              {/* </View> */}
             </View>
             <View>
               <Text style={{color: 'black'}}>{item.name}</Text>
