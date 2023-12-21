@@ -1,9 +1,9 @@
-import React, {useContext} from 'react';
-import {StatusBar, View} from 'react-native';
+import React, { useContext } from 'react';
+import { StatusBar, View } from 'react-native';
 
 // Packages
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
 // Screens
 import SignupScreen from '../screens/OnboardingScreens/SignupScreen';
@@ -14,6 +14,7 @@ import UserScreen from '../screens/BottomTabScreens/UsersScreen';
 
 // Constants
 import theme from '../constants/theme';
+import { useSelector } from 'react-redux';
 
 // Utils
 // import {ThemeContext} from '../utils/themeContext';
@@ -21,36 +22,43 @@ import theme from '../constants/theme';
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
-  // const {isDarkMode} = useContext(ThemeContext);
+  const toData = useSelector(state => state.users.ToDetails)
+  const userData = useSelector(state => state.users.userData)
 
+
+  // const {isDarkMode} = useContext(ThemeContext);
+  console.log("name", userData)
+  const Name = toData?.params?.data?.name
+  const phoneNumber = toData?.params?.data?.phoneNumber
+  const initialRouteName = userData.length > 0 ? 'UserScreen' : 'SignupScreen';
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1,backgroundColor:"#000" }}>
       <StatusBar
         backgroundColor={theme.backgroundColor.themeBG}
         barStyle={'dark-content'}
       />
 
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={SignupScreen}>
+        <Stack.Navigator initialRouteName={initialRouteName}>
           <Stack.Screen
             name="SignupScreen"
             component={SignupScreen}
-            options={{title: '', headerShown: false}}
+            options={{ title: '', headerShown: false }}
           />
           <Stack.Screen
             name="LoginScreen"
             component={LoginScreen}
-            options={{title: '', headerShown: false}}
+            options={{ title: '', headerShown: false }}
           />
           <Stack.Screen
             name="UserScreen"
             component={UserScreen}
-            options={{title: '', headerShown: false}}
+            options={{ title: '', headerShown: false }}
           />
           <Stack.Screen
             name="ChatScreen"
             component={ChatScreen}
-            options={{title: '', headerShown: false}}
+            options={{ title: Name ? Name : phoneNumber, headerShown: true }}
           />
         </Stack.Navigator>
       </NavigationContainer>

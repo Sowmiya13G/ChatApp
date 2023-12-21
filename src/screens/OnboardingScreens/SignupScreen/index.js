@@ -26,12 +26,12 @@ const SignupScreen = () => {
   const navigation = useNavigation();
 
   // Use State
-  const [name, setName] = useState('');
+  const [nameValue, setName] = useState('');
   const [emailId, setEmailId] = useState('');
   const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [confirmPassword, setconfirmPassword] = useState('');
-
+console.log(nameValue)
   // Functions
   const register = () => {
     const UserID = uuid.v4();
@@ -39,10 +39,10 @@ const SignupScreen = () => {
       .collection('users')
       .doc(UserID)
       .set({
-        name: name,
         email: emailId,
         phoneNumber: phoneNumber,
         password: password,
+        name: nameValue,
         confirmPassword: confirmPassword,
         userID: UserID,
       })
@@ -72,11 +72,11 @@ const SignupScreen = () => {
         placeholderTextColor={'grey'}
         style={styles.inputfiled}
         onChangeText={value => setEmailId(value)}></TextInput>
-      <TextInput
-        placeholder="Name"
+        <TextInput
+        placeholder="name"
         placeholderTextColor={'grey'}
         style={styles.inputfiled}
-        onChangeTextText={value => setName(value)}></TextInput>
+        onChangeText={value => setName(value)}></TextInput>
       <TextInput
         placeholder="Phone Number"
         placeholderTextColor={'grey'}
