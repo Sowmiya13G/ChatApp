@@ -3,7 +3,7 @@ import {Text, View, FlatList, TouchableOpacity, Image} from 'react-native';
 
 // Packages
 import firestore from '@react-native-firebase/firestore';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {
@@ -12,18 +12,18 @@ import {
 } from 'react-native-responsive-screen';
 
 // Redux
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
 // constants
 import Avatar from '../../../assets/Imags/avatar.webp';
 import theme from '../../../constants/theme';
-import {ThemeContext} from '../../../utils/themeContext';
+import { ThemeContext } from '../../../utils/themeContext';
 
 // Components
 import Spacer from '../../../components/Spacer';
 
 // Styles
-import {styles} from './styles';
+import { styles } from './styles';
 
 const UserScreen = () => {
   // Variables
@@ -64,7 +64,7 @@ const UserScreen = () => {
   }, []);
 
   const handleUserClick = item => {
-    navigation.navigate('ChatScreen', {data: item, id: store[0].userID});
+    navigation.navigate('ChatScreen', { data: item, id: store[0].userID });
   };
 
   console.log('dsfs', users);
