@@ -1,5 +1,5 @@
-import React, {useEffect, useState, useContext} from 'react';
-import {Text, View, FlatList, TouchableOpacity, Image} from 'react-native';
+import React, {useEffect, useState, useContext, useRef} from 'react';
+import {Text, View, FlatList, TouchableOpacity, Animated} from 'react-native';
 
 // Packages
 import firestore from '@react-native-firebase/firestore';
@@ -31,6 +31,9 @@ const UserScreen = () => {
   const {isDarkMode} = useContext(ThemeContext);
   fontTheme = isDarkMode ? theme.fontColors.white : theme.fontColors.black;
 
+  const rotationValue = useRef(new Animated.Value(0)).current;
+  const [isPressed, setIsPressed] = useState(false);
+
   // Use State
   const [users, setUsers] = useState([]);
   const [showIcons, setShowIcons] = useState(false);
@@ -39,6 +42,11 @@ const UserScreen = () => {
   const store = useSelector(state => state.users.userData);
 
   // Fucntions
+  const rotateInterpolate = rotationValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
+
   const fetchUsers = async () => {
     try {
       const email = store[0].email;
@@ -67,10 +75,18 @@ const UserScreen = () => {
     navigation.navigate('ChatScreen', { data: item, id: store[0].userID });
   };
 
-  console.log('dsfs', users);
+  // console.log('dsfs', users);
   const handleAddNewUserClick = () => {
+    setIsPressed(!isPressed);
+
     console.log('ahsdgk');
     setShowIcons(!showIcons);
+
+    Animated.timing(rotationValue, {
+      toValue: isPressed ? 0 : 1,
+      duration: 1000,
+      useNativeDriver: false, // Add this line for compatibility
+    }).start();
   };
 
   const getRandomLightMatteColor = () => {
@@ -207,12 +223,14 @@ const UserScreen = () => {
           style={[styles.addNewUser]}
           onPress={handleAddNewUserClick}
           activeOpacity={0.7}>
-          <Icon
-            name="gears"
-            size={20}
-            color={theme.fontColors.black}
-            style={styles.icon}
-          />
+          <Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
+        <Icon
+          name="pencil"
+          size={20}
+          color={theme.fontColors.black}
+          style={styles.icon}
+        />
+      </Animated.View>
         </TouchableOpacity>
       </View>
     </View>

@@ -6,8 +6,13 @@ const firebaseConfig = {
   projectId: 'chatapp-2ff01',
   storageBucket: 'chatapp-2ff01.appspot.com',
   appId: '1:838359342773:android:c5754b170d07e8447568fc',
+  messagingSenderId: '838359342773',
 };
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
-export const auth = app.auth();
+// const app = firebase.initializeApp(firebaseConfig);
+// export const auth = app.auth();
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}

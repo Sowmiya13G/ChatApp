@@ -40,7 +40,7 @@ const LoginScreen = () => {
         } else {
           console.log('Login successful');
           console.log(snapshot.docs[0].data())
-          dispatch(setUserData(snapshot.docs[0].data()))
+          dispatch(setUserData([snapshot.docs[0].data()]))
           navigation.navigate('UserScreen');
         }
       })

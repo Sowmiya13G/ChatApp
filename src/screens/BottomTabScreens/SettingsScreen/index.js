@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback, useContext} from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import {
   Text,
   View,
@@ -18,27 +18,29 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
+import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
+import { getStorage, ref, uploadFile, getDownloadURL, uploadBytes } from "@react-native-firebase/storage";
+import { doc, deleteDoc } from "firebase/firestore";
 
 // Redux
-import {useSelector, useDispatch} from 'react-redux';
-import {setProfileImage} from '../../../redux/features/userSlice';
+import { useSelector, useDispatch } from 'react-redux';
+import { setProfileImage } from '../../../redux/features/userSlice';
 
 // Styles
-import {styles} from './styles';
+import { styles } from './styles';
 
 // Components
 import Spacer from '../../../components/Spacer';
 
 // Constants
 import theme from '../../../constants/theme';
-import {ThemeContext} from '../../../utils/themeContext';
-import {checkAndRequestPermissions} from '../../../utils/androidPermissions';
+import { ThemeContext } from '../../../utils/themeContext';
+import { checkAndRequestPermissions } from '../../../utils/androidPermissions';
 
-const SettingsScreen = ({navigation: {goBack}}) => {
+const SettingsScreen = ({ navigation: { goBack } }) => {
   // Variables
-  const {isDarkMode, toggleTheme} = useContext(ThemeContext);
+  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   fontTheme = isDarkMode ? theme.fontColors.white : theme.fontColors.black;
   const dispatch = useDispatch();
 
@@ -52,11 +54,11 @@ const SettingsScreen = ({navigation: {goBack}}) => {
   const [editedPhoneNumber, setEditedPhoneNumber] = useState('');
   const [profile, setProfile] = useState(null);
 
+  const userId = store[0].userID;
+
   // Functions
   const fetchCurrentUser = useCallback(async () => {
     try {
-      const userId = store[0].userID;
-
       const userDoc = await firestore().collection('users').doc(userId).get();
       if (userDoc.exists) {
         setCurrentUser(userDoc.data());
@@ -99,7 +101,7 @@ const SettingsScreen = ({navigation: {goBack}}) => {
           style: 'cancel',
         },
       ],
-      {cancelable: true},
+      { cancelable: true },
     );
   };
 
@@ -114,44 +116,39 @@ const SettingsScreen = ({navigation: {goBack}}) => {
       const imageUri = response.uri || response.assets?.[0]?.uri;
       console.log('imageUri', imageUri);
       setProfile(imageUri ? imageUri : null);
-      //   if (profile) {
-      //     const fileExtension = profile.split('.').pop() || 'jpg';
-      //     const imageRef = storage()
-      //       .ref()
-      //       .child(`profile_images/${userId}.${fileExtension}`);
-      //     console.log('imageRef....', imageRef);
-      //     const downloadUrl = await imageRef.getDownloadURL();
-      //     dispatch(setProfileImage(downloadUrl));
-      //   }
-
-      await handleSaveImage();
     }
   };
 
-  const handleCameraCallback = async response => {
-    if (response.didCancel) {
-      console.log('User canceled taking a photo');
-      setProfile(null);
-    } else if (response.error) {
-      console.log('Camera Error: ', response.error);
-      setProfile(null);
-    } else {
-      const imageUri = response.uri || response.assets?.[0]?.uri;
+  const handleCameraCallback = async (response) => {
+    try {
+      if (!response) {
+        console.log('Response is undefined');
+        return;
+      }
+      if (response.didCancel) {
+        console.log('User canceled taking a photo');
+        return;
+      }
+      if (response.error) {
+        console.log('Camera Error: ', response.error);
+        return;
+      }
+      const imageUri = response.uri || (response.assets?.[0]?.uri ?? null);
+      if (!imageUri) {
+        console.log('Image URI is undefined');
+        return;
+      }
       console.log('imageUri', imageUri);
-      setProfile(imageUri ? imageUri : null);
-      //   if (profile) {
-      //     const fileExtension = profile.split('.').pop() || 'jpg';
-      //     const imageRef = storage()
-      //       .ref()
-      //       .child(`profile_images/${userId}.${fileExtension}`);
-      //     console.log('imageRef....', imageRef);
-      //     const downloadUrl = await imageRef.getDownloadURL();
-
-      //     dispatch(setProfileImage(downloadUrl));
-      //   }
-      await handleSaveImage();
+      const imageResponse = await fetch(imageUri);
+      const blob = await imageResponse.blob();
+      setIsEditing(false);
+      console.log(blob);
+      uploadImageToFirebase(blob);
+    } catch (error) {
+      console.error('Error handling camera callback:', error);
     }
   };
+  
   const handleEdit = () => {
     setIsEditing(true);
     setEditedName(currentUser.name);
@@ -172,46 +169,31 @@ const SettingsScreen = ({navigation: {goBack}}) => {
       console.error('Error updating user details:', error);
     }
   };
+  console.log(profile)
 
-  const handleSaveImage = async () => {
+
+
+  const uploadImageToFirebase = async (blob) => {
     try {
-      const userId = store[0].userID;
-      const userDocRef = firestore().collection('users').doc(userId);
-      console.log('profile....', profile);
-      if (profile) {
-        const fileExtension = profile.split('.').pop() || 'jpg';
-        const imageRef = storage()
-          .ref()
-          .child(`profile_images/${userId}.${fileExtension}`);
-        console.log('imageRef....', imageRef);
-
-        const response = await fetch(profile);
-        console.log('response....', response);
-
-        const blob = await response.blob();
-        console.log('blob....', blob);
-
-        await imageRef.put(blob);
-
-        const downloadUrl = await imageRef.getDownloadURL();
-        console.log('downloadUrl', downloadUrl);
-        await userDocRef.update({
-          profileImage: downloadUrl,
-        });
-      } else {
-        await userDocRef.update({
-          profileImage: null,
-        });
-      }
-
+      const fileName = `profile_images/${userId}.jpg`;
+      console.log(("dddss"))
+      const storageRef = storage().ref(fileName);
+      await storageRef.put(blob);
+      const downloadURL = await storageRef.getDownloadURL();
+      await firestore().collection('users').doc(userId).update({
+        profileImage: downloadURL,
+      });
       setIsEditing(false);
+      ToastAndroid.show('Details updated successfully', ToastAndroid.SHORT);
       await fetchCurrentUser();
+      setProfile(null)
     } catch (error) {
-      console.error('Error updating user details:', error);
-      Alert.alert('Error', 'Failed to update user details. Please try again.');
+      console.error('Error uploading image to Firebase:', error);
     }
   };
-  // UseEffect
+
+
+
   useEffect(() => {
     fetchCurrentUser();
   }, []);
@@ -221,7 +203,7 @@ const SettingsScreen = ({navigation: {goBack}}) => {
   // Render UI.......
 
   // Render header
-  renderHeader = () => {
+  const renderHeader = () => {
     return (
       <View style={styles.header}>
         <TouchableOpacity onPress={() => goBack()} style={styles.backIcon}>
@@ -233,14 +215,13 @@ const SettingsScreen = ({navigation: {goBack}}) => {
   };
 
   // Render Body
-
-  renderBody = () => {
+  const renderBody = () => {
     return (
       <View style={styles.bodyContainer}>
         <View style={styles.profileConatiner}>
           <TouchableOpacity onPress={handleImageUpload} activeOpacity={0.7}>
-            {profile ? (
-              <Image source={{uri: profile}} style={styles.profile} />
+            {currentUser?.profileImage !== null ? (
+              <Image source={{ uri: currentUser?.profileImage }} style={styles.profile} />
             ) : (
               <Icon
                 name="user-circle"
@@ -328,6 +309,7 @@ const SettingsScreen = ({navigation: {goBack}}) => {
       </View>
     );
   };
+
   return (
     <View
       style={[

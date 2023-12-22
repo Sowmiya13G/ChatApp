@@ -9,7 +9,7 @@ const userSlice = createSlice({
   },
   reducers: {
     setUserData: (state = userSlice.initialState, action) => {
-      state.userData = [action.payload];
+      state.userData = action.payload
     },
     ToDetails: (state = userSlice.initialState, action) => {
       console.log('fffdd', action);

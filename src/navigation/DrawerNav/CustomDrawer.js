@@ -1,28 +1,29 @@
-import React, {useContext} from 'react';
-import {View, TouchableOpacity, Text, Switch} from 'react-native';
+import React, { useContext } from 'react';
+import { View, TouchableOpacity, Text, Switch } from 'react-native';
 
 // Packages
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import {
   DrawerContentScrollView,
   DrawerItemList,
 } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {widthPercentageToDP} from 'react-native-responsive-screen';
+import { widthPercentageToDP } from 'react-native-responsive-screen';
 
 // Constants
 import Spacer from '../../components/Spacer';
 
 // constants
 import theme from '../../constants/theme';
-import {ThemeContext} from '../../utils/themeContext';
+import { ThemeContext } from '../../utils/themeContext';
 
 // styles
-import {styles} from './styles';
+import { styles } from './styles';
 
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { setUserData } from '../../redux/features/userSlice';
 const CustomDrawer = props => {
-  const {isDarkMode, toggleTheme} = useContext(ThemeContext);
+  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const cancelNav = () => {
@@ -101,7 +102,7 @@ const CustomDrawer = props => {
             />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.logOut}>
+        <TouchableOpacity style={styles.logOut} onPress={()=>dispatch(setUserData([]))}>
           <Icon
             name={'sign-out'}
             size={25}

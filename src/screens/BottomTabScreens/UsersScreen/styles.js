@@ -47,20 +47,17 @@ export const styles = StyleSheet.create({
     fontSize: theme.fontSizes.mediumFont,
     fontWeight: 'bold',
   },
-  // icon: {
-  //   alignSelf: 'center',
-  //   justifyContent: 'center',
-  // },
+
   iconContainer: {
     flexDirection: 'column',
     justifyContent: 'space-between',
-    marginBottom: '5%',
+    // marginBottom: '5%',
   },
   iconsContainer: {
     flexDirection: 'column',
     justifyContent: 'space-around',
     position: 'absolute',
-    bottom: '5%',
+    bottom: '6%',
     right: '5%',
     // margin: '5%',
     // alignSelf: 'flex-end',

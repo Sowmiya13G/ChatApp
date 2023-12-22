@@ -36,7 +36,8 @@ const AppNavigator = () => {
   console.log('name', userData);
   const Name = toData?.params?.data?.name;
   const phoneNumber = toData?.params?.data?.phoneNumber;
-  const initialRouteName = userData.length > 0 ? 'UserScreen' : 'SignupScreen';
+  const initialRouteName =   userData.length > 0 ? 'UserScreen' : 'SignupScreen';
+  console.log(initialRouteName)
   return (
     <View style={{flex: 1, backgroundColor: '#000'}}>
       <StatusBar
