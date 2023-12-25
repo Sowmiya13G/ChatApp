@@ -20,6 +20,7 @@ export const styles = StyleSheet.create({
     padding: '3%',
     backgroundColor: theme.backgroundColor.gray,
     marginVertical: 1,
+    height:"30%"
     // borderRadius: wp('3%'),
     // margin: '4%',
     // marginBottom: '4%',

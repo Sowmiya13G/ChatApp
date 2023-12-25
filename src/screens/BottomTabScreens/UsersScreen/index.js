@@ -1,5 +1,5 @@
-import React, {useEffect, useState, useContext, useRef} from 'react';
-import {Text, View, FlatList, TouchableOpacity, Animated} from 'react-native';
+import React, { useEffect, useState, useContext, useRef } from 'react';
+import { Text, View, FlatList, TouchableOpacity, Animated, Image } from 'react-native';
 
 // Packages
 import firestore from '@react-native-firebase/firestore';
@@ -28,7 +28,7 @@ import { styles } from './styles';
 const UserScreen = () => {
   // Variables
   const navigation = useNavigation();
-  const {isDarkMode} = useContext(ThemeContext);
+  const { isDarkMode } = useContext(ThemeContext);
   fontTheme = isDarkMode ? theme.fontColors.white : theme.fontColors.black;
 
   const rotationValue = useRef(new Animated.Value(0)).current;
@@ -42,7 +42,40 @@ const UserScreen = () => {
   const store = useSelector(state => state.users.userData);
 
   // Fucntions
-  const rotateInterpolate = rotationValue.interpolate({
+  const rotateInterpolate1 = rotationValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '180deg'],
+  });
+
+  const AnimatedIcon = Animated.createAnimatedComponent(Icon);
+
+  const rotateAnim = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    if (showIcons) {
+      Animated.timing(rotateAnim, {
+        toValue: 1,
+        duration: 1000, // Adjust the duration as needed
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [rotateAnim, showIcons]);
+
+
+  const closeIconsAnimation = () => {
+    Animated.parallel([
+      Animated.timing(rotationValue, {
+        toValue: 0,
+        duration: 100,
+        useNativeDriver: false,
+      }),
+      // Add more Animated.timing for other properties if needed
+    ]).start(() => {
+      setIsPressed(false);
+      setShowIcons(false);
+    });
+  };
+
+  const rotateInterpolate = rotateAnim.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg'],
   });
@@ -75,18 +108,19 @@ const UserScreen = () => {
     navigation.navigate('ChatScreen', { data: item, id: store[0].userID });
   };
 
-  // console.log('dsfs', users);
   const handleAddNewUserClick = () => {
-    setIsPressed(!isPressed);
+    if (showIcons) {
+      closeIconsAnimation();
+    } else {
+      setIsPressed(true);
+      setShowIcons(true);
 
-    console.log('ahsdgk');
-    setShowIcons(!showIcons);
-
-    Animated.timing(rotationValue, {
-      toValue: isPressed ? 0 : 1,
-      duration: 1000,
-      useNativeDriver: false, // Add this line for compatibility
-    }).start();
+      Animated.timing(rotationValue, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: false,
+      }).start();
+    }
   };
 
   const getRandomLightMatteColor = () => {
@@ -124,32 +158,32 @@ const UserScreen = () => {
     );
   };
 
-  renderBody = ({item}) => {
+  renderBody = ({ item }) => {
     return (
       <View>
         <TouchableOpacity
           style={[styles.chatList]}
           onPress={() => handleUserClick(item)}>
           <View>
-            {/* <Image source={Avatar} style={[styles.avatar]} alt='avatar' /> */}
-            {/* <View style={[styles.avatar,{backgroundColor:getRandomLightMatteColor()}]}> */}
-            <LinearGradient
-              colors={['#fefefe', getRandomLightMatteColor()]}
-              style={[
-                styles.avatar,
-                {backgroundColor: getRandomLightMatteColor()},
-              ]}>
-              <Text
+            {item.profileImage != null ?
+              <Image source={{ uri: item?.profileImage }} style={[styles.avatar]} alt='avatar' /> :
+              <LinearGradient
+                colors={['#fefefe', getRandomLightMatteColor()]}
                 style={[
-                  styles.text,
-                  {
-                    color: 'black',
-                  },
+                  styles.avatar,
+                  { backgroundColor: getRandomLightMatteColor() },
                 ]}>
-                {item.name.slice(0, 1)}
-              </Text>
-            </LinearGradient>
-            {/* </View> */}
+                <Text
+                  style={[
+                    styles.text,
+                    {
+                      color: 'black',
+                    },
+                  ]}>
+                  {item.name.slice(0, 1)}
+                </Text>
+              </LinearGradient>
+            }
           </View>
           <Spacer width={widthPercentageToDP('2%')} />
           <View>
@@ -183,63 +217,110 @@ const UserScreen = () => {
         renderItem={renderBody}
         ListHeaderComponent={renderHeader()}
       />
-      <View style={styles.iconsContainer}>
-        {showIcons ? (
-          <View style={styles.iconContainer}>
-            <TouchableOpacity
-              style={styles.addNewUser}
-              onPress={() => console.log('Edit')}>
-              <Icon
-                name="user"
-                size={20}
-                color={theme.fontColors.black}
-                style={styles.icon}
-              />
-            </TouchableOpacity>
-            <Spacer height={heightPercentageToDP('2%')} />
-            <TouchableOpacity
-              style={styles.addNewUser}
-              onPress={() => console.log('User Profile')}>
-              <Icon
-                name="user-plus"
-                size={20}
-                color={theme.fontColors.black}
-                style={styles.icon}
-              />
-            </TouchableOpacity>
-            <Spacer height={heightPercentageToDP('2%')} />
-            <TouchableOpacity style={styles.addNewUser} onPress={goToProfile}>
-              <Icon
-                name="gear"
-                size={20}
-                color={theme.fontColors.black}
-                style={styles.icon}
-              />
-            </TouchableOpacity>
-            <Spacer height={heightPercentageToDP('2%')} />
-          </View>
-        ) : null}
-        <TouchableOpacity
-          style={[styles.addNewUser]}
-          onPress={handleAddNewUserClick}
-          activeOpacity={0.7}>
-          <Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
-        <Icon
-          name="pencil"
-          size={20}
-          color={theme.fontColors.black}
-          style={styles.icon}
-        />
-      </Animated.View>
-        </TouchableOpacity>
-      </View>
+      {/* {users.map((item, index) => (
+        <View key={index} >
+          <TouchableOpacity
+            style={[styles.chatList]}
+            onPress={() => handleUserClick(item)}>
+            <View>
+              {item.profileImage != null ?
+                <Image source={{ uri: item?.profileImage }} style={[styles.avatar]} alt='avatar' /> :
+                <LinearGradient
+                  colors={['#fefefe', getRandomLightMatteColor()]}
+                  style={[
+                    styles.avatar,
+                    { backgroundColor: getRandomLightMatteColor() },
+                  ]}>
+                  <Text
+                    style={[
+                      styles.text,
+                      {
+                        color: 'black',
+                      },
+                    ]}>
+                    {item.name.slice(0, 1)}
+                  </Text>
+                </LinearGradient>
+              }
+            </View>
+            <Spacer width={widthPercentageToDP('2%')} />
+            <View>
+              <Text
+                style={[
+                  styles.text,
+                  {
+                    color: fontTheme,
+                  },
+                ]}>
+                {item.name}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      ))} */}
+    <View style={styles.iconsContainer}>
+      {showIcons ? (
+        <View style={styles.iconContainer}>
+          {/* First Icon */}
+          <TouchableOpacity
+            style={styles.addNewUser}
+            onPress={() => console.log('Edit')}>
+            <AnimatedIcon
+              name="user"
+              size={20}
+              color={theme.fontColors.black}
+              style={[styles.icon, { transform: [{ rotate: rotateInterpolate }] }]}
+            />
+          </TouchableOpacity>
+          <Spacer height={heightPercentageToDP('2%')} />
+
+          {/* Second Icon */}
+          <TouchableOpacity
+            style={styles.addNewUser}
+            onPress={() => console.log('User Profile')}>
+            <AnimatedIcon
+              name="user-plus"
+              size={20}
+              color={theme.fontColors.black}
+              style={[styles.icon, { transform: [{ rotate: rotateInterpolate }] }]}
+            />
+          </TouchableOpacity>
+          <Spacer height={heightPercentageToDP('2%')} />
+
+          {/* Third Icon */}
+          <TouchableOpacity
+            style={styles.addNewUser}
+            onPress={goToProfile}>
+            <AnimatedIcon
+              name="gear"
+              size={20}
+              color={theme.fontColors.black}
+              style={[styles.icon, { transform: [{ rotate: rotateInterpolate }] }]}
+            />
+          </TouchableOpacity>
+          <Spacer height={heightPercentageToDP('2%')} />
+        </View>
+      ) : null}
+
+      {/* Animated Pencil Icon */}
+      <TouchableOpacity
+        style={[styles.addNewUser]}
+        onPress={handleAddNewUserClick}
+        activeOpacity={0.7}>
+        <Animated.View style={{ transform: [{ rotate: rotateInterpolate1 }] }}>
+          <AnimatedIcon
+            name="pencil"
+            size={20}
+            color={theme.fontColors.black}
+            style={styles.icon}
+          />
+        </Animated.View>
+      </TouchableOpacity>
+    </View>
     </View>
   );
 };
 
 export default UserScreen;
 
-// const filteredUsers = users
-//   ? users.filter(user => user.email !== store[0].email)
-//   : [];
-// console.log('filteredUsers', filteredUsers);
+
