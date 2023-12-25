@@ -164,7 +164,7 @@ const SettingsScreen = ({ navigation: { goBack } }) => {
       console.error('Error handling camera callback:', error);
     }
   };
-  
+
   const handleEdit = () => {
     setIsEditing(true);
     setEditedName(currentUser.name);
@@ -223,9 +223,16 @@ const SettingsScreen = ({ navigation: { goBack } }) => {
     return (
       <View style={styles.header}>
         <TouchableOpacity onPress={() => goBack()} style={styles.backIcon}>
-          <Icon name="angle-left" size={30} color={theme.fontColors.black} />
+          <Icon name="angle-left" size={30} color={isDarkMode ? theme.fontColors.white : theme.fontColors.black} />
         </TouchableOpacity>
-        <Text style={styles.title}>dfghjk</Text>
+        <Text style={[
+          styles.title,
+          {
+            color: isDarkMode
+              ? theme.fontColors.white
+              : theme.fontColors.black,
+          },
+        ]}>USER PROFILE</Text>
       </View>
     );
   };

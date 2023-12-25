@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 // Packages
 import {
@@ -78,6 +78,6 @@ export const styles = StyleSheet.create({
     color: theme.fontColors.secondaryBlack,
     fontSize: theme.fontSizes.bigFont,
     fontWeight: 'bold',
-    paddingLeft: '33%',
+    paddingLeft: '30%',
   },
 });

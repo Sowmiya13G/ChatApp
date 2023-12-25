@@ -54,7 +54,7 @@ const UserScreen = () => {
     if (showIcons) {
       Animated.timing(rotateAnim, {
         toValue: 1,
-        duration: 1000, // Adjust the duration as needed
+        duration: 1000,
         useNativeDriver: true,
       }).start();
     }
@@ -68,7 +68,6 @@ const UserScreen = () => {
         duration: 100,
         useNativeDriver: false,
       }),
-      // Add more Animated.timing for other properties if needed
     ]).start(() => {
       setIsPressed(false);
       setShowIcons(false);
@@ -153,12 +152,20 @@ const UserScreen = () => {
         {/* <TouchableOpacity onPress={() => goBack()} style={styles.backIcon}>
           <Icon name="angle-left" size={30} color={theme.fontColors.black} />
         </TouchableOpacity> */}
-        <Text style={styles.title}>PikUp</Text>
+        <Text style={[
+          styles.title,
+          {
+            color: isDarkMode
+              ? theme.fontColors.white
+              : theme.fontColors.black,
+          }
+        ]}>PikUp</Text>
       </View>
     );
   };
 
   renderBody = ({ item }) => {
+    console.log('ITEM', item?.profileImage)
     return (
       <View>
         <TouchableOpacity
@@ -177,7 +184,9 @@ const UserScreen = () => {
                   style={[
                     styles.text,
                     {
-                      color: 'black',
+                      color: isDarkMode
+                        ? theme.fontColors.white
+                        : theme.fontColors.black,
                     },
                   ]}>
                   {item.name.slice(0, 1)}
@@ -191,7 +200,9 @@ const UserScreen = () => {
               style={[
                 styles.text,
                 {
-                  color: fontTheme,
+                  color: isDarkMode
+                    ? theme.fontColors.white
+                    : theme.fontColors.black,
                 },
               ]}>
               {item.name}
@@ -258,65 +269,65 @@ const UserScreen = () => {
           </TouchableOpacity>
         </View>
       ))} */}
-    <View style={styles.iconsContainer}>
-      {showIcons ? (
-        <View style={styles.iconContainer}>
-          {/* First Icon */}
-          <TouchableOpacity
-            style={styles.addNewUser}
-            onPress={() => console.log('Edit')}>
+      <View style={styles.iconsContainer}>
+        {showIcons ? (
+          <View style={styles.iconContainer}>
+            {/* First Icon */}
+            <TouchableOpacity
+              style={styles.addNewUser}
+              onPress={() => console.log('Edit')}>
+              <AnimatedIcon
+                name="user"
+                size={20}
+                color={theme.fontColors.black}
+                style={[styles.icon, { transform: [{ rotate: rotateInterpolate }] }]}
+              />
+            </TouchableOpacity>
+            <Spacer height={heightPercentageToDP('2%')} />
+
+            {/* Second Icon */}
+            <TouchableOpacity
+              style={styles.addNewUser}
+              onPress={() => console.log('User Profile')}>
+              <AnimatedIcon
+                name="user-plus"
+                size={20}
+                color={theme.fontColors.black}
+                style={[styles.icon, { transform: [{ rotate: rotateInterpolate }] }]}
+              />
+            </TouchableOpacity>
+            <Spacer height={heightPercentageToDP('2%')} />
+
+            {/* Third Icon */}
+            <TouchableOpacity
+              style={styles.addNewUser}
+              onPress={goToProfile}>
+              <AnimatedIcon
+                name="gear"
+                size={20}
+                color={theme.fontColors.black}
+                style={[styles.icon, { transform: [{ rotate: rotateInterpolate }] }]}
+              />
+            </TouchableOpacity>
+            <Spacer height={heightPercentageToDP('2%')} />
+          </View>
+        ) : null}
+
+        {/* Animated Pencil Icon */}
+        <TouchableOpacity
+          style={[styles.addNewUser]}
+          onPress={handleAddNewUserClick}
+          activeOpacity={0.7}>
+          <Animated.View style={{ transform: [{ rotate: rotateInterpolate1 }] }}>
             <AnimatedIcon
-              name="user"
+              name="pencil"
               size={20}
               color={theme.fontColors.black}
-              style={[styles.icon, { transform: [{ rotate: rotateInterpolate }] }]}
+              style={styles.icon}
             />
-          </TouchableOpacity>
-          <Spacer height={heightPercentageToDP('2%')} />
-
-          {/* Second Icon */}
-          <TouchableOpacity
-            style={styles.addNewUser}
-            onPress={() => console.log('User Profile')}>
-            <AnimatedIcon
-              name="user-plus"
-              size={20}
-              color={theme.fontColors.black}
-              style={[styles.icon, { transform: [{ rotate: rotateInterpolate }] }]}
-            />
-          </TouchableOpacity>
-          <Spacer height={heightPercentageToDP('2%')} />
-
-          {/* Third Icon */}
-          <TouchableOpacity
-            style={styles.addNewUser}
-            onPress={goToProfile}>
-            <AnimatedIcon
-              name="gear"
-              size={20}
-              color={theme.fontColors.black}
-              style={[styles.icon, { transform: [{ rotate: rotateInterpolate }] }]}
-            />
-          </TouchableOpacity>
-          <Spacer height={heightPercentageToDP('2%')} />
-        </View>
-      ) : null}
-
-      {/* Animated Pencil Icon */}
-      <TouchableOpacity
-        style={[styles.addNewUser]}
-        onPress={handleAddNewUserClick}
-        activeOpacity={0.7}>
-        <Animated.View style={{ transform: [{ rotate: rotateInterpolate1 }] }}>
-          <AnimatedIcon
-            name="pencil"
-            size={20}
-            color={theme.fontColors.black}
-            style={styles.icon}
-          />
-        </Animated.View>
-      </TouchableOpacity>
-    </View>
+          </Animated.View>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
