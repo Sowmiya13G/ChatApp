@@ -106,16 +106,32 @@ const SettingsScreen = ({ navigation: { goBack } }) => {
   };
 
   const handleImageLibraryCallback = async response => {
-    if (response.didCancel) {
-      console.log('User canceled image library');
-      setProfile(null);
-    } else if (response.error) {
-      console.log('ImagePicker Error (Library): ', response.error);
-      setProfile(null);
-    } else {
-      const imageUri = response.uri || response.assets?.[0]?.uri;
+    try {
+      if (!response) {
+        console.log('Response is undefined');
+        return;
+      }
+      if (response.didCancel) {
+        console.log('User canceled taking a photo');
+        return;
+      }
+      if (response.error) {
+        console.log('Camera Error: ', response.error);
+        return;
+      }
+      const imageUri = response.uri || (response.assets?.[0]?.uri ?? null);
+      if (!imageUri) {
+        console.log('Image URI is undefined');
+        return;
+      }
       console.log('imageUri', imageUri);
-      setProfile(imageUri ? imageUri : null);
+      const imageResponse = await fetch(imageUri);
+      const blob = await imageResponse.blob();
+      setIsEditing(false);
+      console.log(blob);
+      uploadImageToFirebase(blob);
+    } catch (error) {
+      console.error('Error handling camera callback:', error);
     }
   };
 
