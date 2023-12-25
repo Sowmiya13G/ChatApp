@@ -225,7 +225,7 @@ const SettingsScreen = ({ navigation: { goBack } }) => {
         <TouchableOpacity onPress={() => goBack()} style={styles.backIcon}>
           <Icon name="angle-left" size={30} color={theme.fontColors.black} />
         </TouchableOpacity>
-        <Text style={styles.title}>dfghjk</Text>
+        <Text style={styles.title}>Edit Profile</Text>
       </View>
     );
   };
