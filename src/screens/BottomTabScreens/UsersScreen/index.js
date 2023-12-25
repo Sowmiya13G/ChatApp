@@ -137,14 +137,24 @@ const UserScreen = () => {
               ? theme.backgroundColor.dark
               : theme.backgroundColor.themeBG,
           },
-        ]}
-      >
-        <Text style={styles.title}>PikUp</Text>
+        ]}>
+        {/* <TouchableOpacity onPress={() => goBack()} style={styles.backIcon}>
+          <Icon name="angle-left" size={30} color={theme.fontColors.black} />
+        </TouchableOpacity> */}
+        <Text style={[
+          styles.title,
+          {
+            color: isDarkMode
+              ? theme.fontColors.white
+              : theme.fontColors.black,
+          }
+        ]}>PikUp</Text>
       </View>
     );
   };
 
   renderBody = ({ item }) => {
+    console.log('ITEM', item?.profileImage)
     return (
       <View>
         <TouchableOpacity
@@ -170,7 +180,9 @@ const UserScreen = () => {
                   style={[
                     styles.text,
                     {
-                      color: 'black',
+                      color: isDarkMode
+                        ? theme.fontColors.white
+                        : theme.fontColors.black,
                     },
                   ]}
                 >
@@ -185,7 +197,9 @@ const UserScreen = () => {
               style={[
                 styles.text,
                 {
-                  color: fontTheme,
+                  color: isDarkMode
+                    ? theme.fontColors.white
+                    : theme.fontColors.black,
                 },
               ]}
             >
