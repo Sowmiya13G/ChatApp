@@ -132,9 +132,28 @@ const ChatScreen = ({ navigation: { goBack } }) => {
     }
   };
 
-  const formatDate = (date) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit',  };
-    return new Date(date).toLocaleString('en-US', options);
+  const formatLastSeen = (lastSeen) => {
+    const currentDate = new Date();
+    const lastSeenDate = new Date(lastSeen);
+  
+    const timeDifference = currentDate - lastSeenDate;
+    const seconds = Math.floor(timeDifference / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+  
+    if (seconds < 60) {
+      return 'Online';
+    } else if (minutes < 60) {
+      return `${minutes}m ago`;
+    } else if (hours < 24) {
+      return `${hours}h ago`;
+    } else if (days === 1) {
+      return 'Yesterday';
+    } else {
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return new Date(lastSeen).toLocaleString('en-US', options);
+    }
   };
   
   console.log(route.params.data.name)
@@ -147,9 +166,8 @@ const ChatScreen = ({ navigation: { goBack } }) => {
         <Image source={{ uri: route.params.data.profileImage }} style={styles.headerAvatar} />
         <View>
           <Text style={styles.headerTitle}>{route.params.data.name}</Text>
-          <Text>{formatDate(route.params.data.lastSeen)}</Text>
+          <Text>{formatLastSeen(route.params.data.lastSeen)}</Text>
         </View>
-
       </View>
       <GiftedChat
         messages={messages}
