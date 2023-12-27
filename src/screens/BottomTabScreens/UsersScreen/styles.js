@@ -16,11 +16,11 @@ export const styles = StyleSheet.create({
   chatList: {
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     padding: '3%',
-    backgroundColor: theme.backgroundColor.gray,
+    backgroundColor: theme.backgroundColor.lightGray,
     marginVertical: 1,
-    height:"30%"
+    height:"10%"
     // borderRadius: wp('3%'),
     // margin: '4%',
     // marginBottom: '4%',
@@ -33,6 +33,15 @@ export const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  msgDate:{
+    flex:1,
+    alignItems:'flex-end',
+    justifyContent:"flex-end"
+
+  },
+  msgTime:{
+alignItems:'flex-end',
   },
   addNewUser: {
     backgroundColor: theme.backgroundColor.white,
@@ -47,6 +56,7 @@ export const styles = StyleSheet.create({
   text: {
     fontSize: theme.fontSizes.mediumFont,
     fontWeight: 'bold',
+    textTransform:"capitalize"
   },
 
   iconContainer: {

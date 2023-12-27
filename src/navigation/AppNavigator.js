@@ -38,8 +38,7 @@ const AppNavigator = () => {
   const [tempUserId, setTempUserId] = useState("")
   const { isDarkMode } = useContext(ThemeContext);
 
-  const Name = toData?.params?.data?.name;
-  const phoneNumber = toData?.params?.data?.phoneNumber;
+
   const UserID = userData[0]?.userID;
 
   useEffect(() => {
@@ -50,7 +49,7 @@ const AppNavigator = () => {
       const updateStatus = async (isConnected) => {
         try {
           await userStatusRef.update({
-            lastSeen: isConnected ? 'online' : Date(),
+            lastSeen:  Date(),
           });
           console.log('Status successfully updated to', isConnected ? 'online' : 'offline');
         } catch (error) {
@@ -77,8 +76,14 @@ const AppNavigator = () => {
       const unsubscribeNetwork = NetInfo.addEventListener(onNetworkChange);
       AppState.addEventListener('change', handleAppStateChange);
 
+      const intervalId = setInterval(() => {
+        // Call updateStatus every minute
+        updateStatus(true);
+      }, 60000);
       return () => {
         unsubscribeNetwork();
+        clearInterval(intervalId);
+
       };
     }
     else {
@@ -92,7 +97,7 @@ const AppNavigator = () => {
       }
     }
 
-  }, [userData]);
+  }, [userData, Date()]);
 
   const initialRouteName = () => {
     return userData.length > 0 ? 'UserScreen' : 'SignupScreen';
@@ -135,7 +140,7 @@ console.log(initialRouteName(),"ffffff")
           <Stack.Screen
             name="ChatScreen"
             component={ChatScreen}
-            options={{ title: Name ? Name : phoneNumber, headerShown: false }}
+            options={{ title:"", headerShown: false }}
           />
           <Stack.Screen
             name="SettingsScreen"
