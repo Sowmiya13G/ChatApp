@@ -42,4 +42,28 @@ export const styles = StyleSheet.create({
         marginRight: 10,
         alignSelf: 'center'
     },
+    headerContainer: {
+        flexDirection: 'row',
+        minHeight:hp("8%"),
+        alignItems: 'center',
+        backgroundColor:"grey",
+        paddingVertical:4 ,
+        paddingHorizontal:wp(5),
+      },
+      headerAvatar: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        marginRight: 20,
+      },
+      headerTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#fff',
+        textTransform:"capitalize"
+      },
+      backIcon: {
+        alignSelf: 'flex-start',
+        marginRight:20
+      },
 });

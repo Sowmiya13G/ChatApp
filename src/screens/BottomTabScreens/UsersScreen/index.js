@@ -154,7 +154,6 @@ const UserScreen = () => {
   };
 
   renderBody = ({ item }) => {
-    console.log('ITEM', item?.profileImage)
     return (
       <View>
         <TouchableOpacity

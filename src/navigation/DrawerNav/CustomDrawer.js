@@ -29,16 +29,22 @@ const CustomDrawer = props => {
   const cancelNav = () => {
     navigation.navigate('HomeTab');
   };
-  //   const handleLogout = async () => {
-  //     console.log('logged out successfully');
-  //     try {
-  //       await auth().signOut();
-  //       dispatch(clearUserDataAction());
-  //       navigation.navigate('LoginScreen');
-  //     } catch (error) {
-  //       console.error('Error during logout:', error);
-  //     }
-  //   };
+  const handleLogout = () => {
+    // console.log('logged out successfully');
+    // try {
+    //   await auth().signOut();
+    //   dispatch(clearUserDataAction());
+    // navigation.navigate('LoginScreen');
+    // } catch (error) {
+    //   console.error('Error during logout:', error);
+    // }
+
+
+    dispatch(setUserData([]))
+
+    navigation.navigate('LoginScreen');
+
+  };
   return (
     <DrawerContentScrollView
       {...props}
@@ -102,7 +108,7 @@ const CustomDrawer = props => {
             />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.logOut} onPress={()=>dispatch(setUserData([]))}>
+        <TouchableOpacity style={styles.logOut} onPress={() => handleLogout()}>
           <Icon
             name={'sign-out'}
             size={25}

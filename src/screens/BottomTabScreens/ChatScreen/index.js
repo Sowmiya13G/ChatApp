@@ -1,9 +1,10 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useContext } from 'react';
 import { View, Text, Image } from 'react-native';
 // Packages
 import { GiftedChat, Send, Bubble } from 'react-native-gifted-chat';
 import firestore from '@react-native-firebase/firestore';
 import { useRoute } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 // Redux
 import { useDispatch } from 'react-redux';
@@ -11,13 +12,16 @@ import { ToDetails } from '../../../redux/features/userSlice';
 
 // Constants
 import theme from '../../../constants/theme';
-
+import { ThemeContext } from '../../../utils/themeContext';
 //Styles
 import { styles } from './styles';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-const ChatScreen = () => {
+const ChatScreen = ({ navigation: { goBack } }) => {
   // Variables
   const dispatch = useDispatch();
+  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  fontTheme = isDarkMode ? theme.fontColors.white : theme.fontColors.black;
   // const { userID } = route.params;
   const route = useRoute();
 
@@ -128,17 +132,37 @@ const ChatScreen = () => {
     }
   };
 
+  const formatDate = (date) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit',  };
+    return new Date(date).toLocaleString('en-US', options);
+  };
+  
+  console.log(route.params.data.name)
   return (
-    <GiftedChat
-      messages={messages}
-      onSend={messages => onSend(messages)}
-      user={{
-        _id: route.params.id,
-      }}
-      textInputProps={styles.input}
-      renderSend={renderSend}
-      renderMessage={renderMessage}
-    />
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        {/* <TouchableOpacity onPress={() => goBack()} style={styles.backIcon}>
+          <Icon name="angle-left" size={30} color={isDarkMode ? theme.fontColors.white : theme.fontColors.black} />
+        </TouchableOpacity> */}
+        <Image source={{ uri: route.params.data.profileImage }} style={styles.headerAvatar} />
+        <View>
+          <Text style={styles.headerTitle}>{route.params.data.name}</Text>
+          <Text>{formatDate(route.params.data.lastSeen)}</Text>
+        </View>
+
+      </View>
+      <GiftedChat
+        messages={messages}
+        onSend={messages => onSend(messages)}
+        user={{
+          _id: route.params.id,
+        }}
+        textInputProps={styles.input}
+        renderSend={renderSend}
+        renderMessage={renderMessage}
+      />
+    </View>
+
   );
 };
 

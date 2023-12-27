@@ -45,6 +45,7 @@ console.log(nameValue)
         name: nameValue,
         confirmPassword: confirmPassword,
         userID: UserID,
+        profileImage:"https://firebasestorage.googleapis.com/v0/b/chatapp-2ff01.appspot.com/o/3d-icon-social-media-app_23-2150049569.avif?alt=media&token=a0927f8b-17cf-410b-b34d-a96dc3d743ac"
       })
       .then(resp => {
         console.log(resp);
