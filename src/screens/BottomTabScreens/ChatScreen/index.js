@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 // Redux
 import { useDispatch } from 'react-redux';
-import { ToDetails } from '../../../redux/features/userSlice';
+import { ToDetails, setMessagesStore } from '../../../redux/features/userSlice';
 
 // Constants
 import theme from '../../../constants/theme';
@@ -67,6 +67,7 @@ const ChatScreen = ({ navigation: { goBack } }) => {
         return { ...item._data, createdAt: item._data.createdAt };
       });
       setMessages(allmesg);
+      dispatch(setMessagesStore(allmesg))
     });
     return () => unsubscribe();
   }, []);

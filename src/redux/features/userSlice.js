@@ -5,6 +5,7 @@ const userSlice = createSlice({
   initialState: {
     userData: [],
     ToDetails: [],
+    messages: [],
     profileImage: null,
   },
   reducers: {
@@ -12,8 +13,10 @@ const userSlice = createSlice({
       state.userData = action.payload
     },
     ToDetails: (state = userSlice.initialState, action) => {
-      console.log('fffdd', action);
       state.ToDetails = action.payload;
+    },
+    setMessagesStore: (state = userSlice.initialState, action) => {
+      state.messages = action.payload;
     },
     setProfileImage: (state, action) => {
       state.profileImage = action.payload;
@@ -21,5 +24,5 @@ const userSlice = createSlice({
   },
 });
 
-export const {setUserData, ToDetails, setProfileImage} = userSlice.actions;
+export const {setUserData, ToDetails, setProfileImage,setMessagesStore} = userSlice.actions;
 export default userSlice.reducer;

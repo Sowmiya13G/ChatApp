@@ -74,9 +74,6 @@ const UserScreen = () => {
     }
   }, [showIcons]);
 
-  useEffect(() => {
-    fetchUsers(); // Call fetchUsers after the animations are completed
-  }, [showIcons]);
 
 
   // Fetch Users
@@ -136,13 +133,14 @@ const UserScreen = () => {
   };
 
   useEffect(() => {
-    fetchUsers();
-  
-    return () => {
-   
-    };
+    const timer = setInterval(() => {
+      fetchUsers();
+    }, 2000);
+
+    // Clear the interval when the component unmounts
+    // return () => clearInterval(timer);
   }, []);
-  
+
 
   const handleUserClick = item => {
     navigation.navigate('ChatScreen', { data: item, id: store[0].userID });
@@ -200,7 +198,7 @@ const UserScreen = () => {
   const isToday = (date) => {
     const today = new Date();
     const compareDate = new Date(date);
-  
+
     return (
       today.getDate() === compareDate.getDate() &&
       today.getMonth() === compareDate.getMonth() &&
@@ -215,7 +213,7 @@ const UserScreen = () => {
           style={[styles.chatList]}
           onPress={() => handleUserClick(item)}
         >
-          <View>
+          <View style={styles.avatarFrame} >
             {item.profileImage != null ? (
               <Image
                 source={{ uri: item?.profileImage }}
@@ -247,7 +245,7 @@ const UserScreen = () => {
           </View>
           <Spacer width={widthPercentageToDP('2%')} />
           <View>
-          <Text
+            <Text
               style={[
                 styles.text,
                 {
@@ -261,31 +259,51 @@ const UserScreen = () => {
             </Text>
             <Text
               style={[
-                styles.text,
+                styles.textmsg,
                 {
-                  color: isDarkMode
-                    ? theme.fontColors.white
-                    : theme.fontColors.grey,
+                  color: item?.lastMessage?.sendBy == store[0]?.userID
+                    ? theme.fontColors.hexGray
+                    : theme.fontColors.green,
                 },
               ]}
             >
-              {item.lastMessage ? item.lastMessage.text : 'No messages'}
+
+              {item?.lastMessage ? item.lastMessage?.text : ''}
             </Text>
-        {console.log(item.lastMessage)}
           </View>
+
           <View style={styles.msgDate} >
-          <Text
-            style={[
-              styles.msgTime,
-              {
-                color: isDarkMode
-                  ? theme.fontColors.grey
-                  : theme.fontColors.grey,
-              },
-            ]}
-          >
-          {item.lastMessage ? formatTimestamp(item.lastMessage.createdAt) : ''}
-          </Text>
+            {item?.lastMessage !== null ? item?.lastMessage?.sendBy == store[0]?.userID ?
+
+              <Icon
+                name="angle-double-right"
+                size={20}
+                color={theme.fontColors.black}
+                style={styles.sentIcon}
+
+              />
+              :
+
+              <Icon
+                name="angle-double-left"
+                size={20}
+                color={theme.fontColors.black}
+                style={styles.sentIcon}
+              /> : ""
+            }
+            <Text
+              style={[
+                styles.msgTime,
+                {
+                  color: isDarkMode
+                    ? theme.fontColors.white
+                    : theme.fontColors.inkDark,
+                },
+              ]}
+            >
+
+              {item.lastMessage ? formatTimestamp(item.lastMessage.createdAt) : ''}
+            </Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -295,7 +313,7 @@ const UserScreen = () => {
 
   const formatTimestamp = (timestamp) => {
     const messageDate = new Date(timestamp);
-  
+
     if (isToday(messageDate)) {
       return messageDate.toLocaleString('en-US', {
         hour: 'numeric',
@@ -311,63 +329,6 @@ const UserScreen = () => {
     }
   };
 
-  // renderBody = ({ item }) => {
-  //   return (
-  //     <View>
-  //       {console.log(item.userID)}
-  //       <TouchableOpacity
-  //         style={[styles.chatList]}
-  //         onPress={() => handleUserClick(item)}
-  //       >
-  //         <View>
-  //           {item.profileImage != null ? (
-  //             <Image
-  //               source={{ uri: item?.profileImage }}
-  //               style={[styles.avatar]}
-  //               alt="avatar"
-  //             />
-  //           ) : (
-  //             <LinearGradient
-  //               colors={['#fefefe', getRandomLightMatteColor()]}
-  //               style={[
-  //                 styles.avatar,
-  //                 { backgroundColor: getRandomLightMatteColor() },
-  //               ]}
-  //             >
-  //               <Text
-  //                 style={[
-  //                   styles.text,
-  //                   {
-  //                     color: isDarkMode
-  //                       ? theme.fontColors.white
-  //                       : theme.fontColors.black,
-  //                   },
-  //                 ]}
-  //               >
-  //                 {item.name.slice(0, 1)}
-  //               </Text>
-  //             </LinearGradient>
-  //           )}
-  //         </View>
-  //         <Spacer width={widthPercentageToDP('2%')} />
-  //         <View>
-  //           <Text
-  //             style={[
-  //               styles.text,
-  //               {
-  //                 color: isDarkMode
-  //                   ? theme.fontColors.white
-  //                   : theme.fontColors.black,
-  //               },
-  //             ]}
-  //           >
-  //             {item.name}
-  //           </Text>
-  //         </View>
-  //       </TouchableOpacity>
-  //     </View>
-  //   );
-  // };
 
   return (
     <View
@@ -429,13 +390,29 @@ const UserScreen = () => {
             <Spacer height={heightPercentageToDP('2%')} />
 
             {/* Third Icon */}
-            <TouchableOpacity style={styles.addNewUser} onPress={goToProfile}>
-              <Icon
-                name="gear"
-                size={20}
-                color={theme.fontColors.black}
-                style={styles.icon}
-              />
+            <TouchableOpacity
+              style={styles.addNewUser}
+              onPress={goToProfile}
+            >
+              <Animated.View
+                style={{
+                  transform: [
+                    {
+                      rotate: fadeAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: ['0deg', '180deg'], 
+                      }),
+                    },
+                  ],
+                }}
+              >
+                <Icon
+                  name="gear"
+                  size={20}
+                  color={theme.fontColors.black}
+                  style={styles.icon}
+                />
+              </Animated.View>
             </TouchableOpacity>
             <Spacer height={heightPercentageToDP('2%')} />
           </Animated.View>
@@ -445,14 +422,26 @@ const UserScreen = () => {
         <TouchableOpacity
           style={[styles.addNewUser]}
           onPress={handleAddNewUserClick}
-          activeOpacity={0.7}
         >
+                     <Animated.View
+                style={{
+                  transform: [
+                    {
+                      rotate: fadeAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: ['0deg', '180deg'], 
+                      }),
+                    },
+                  ],
+                }}
+              >
           <Icon
             name="pencil"
             size={20}
             color={theme.fontColors.black}
             style={styles.icon}
           />
+          </Animated.View>
         </TouchableOpacity>
       </Animated.View>
     </View>

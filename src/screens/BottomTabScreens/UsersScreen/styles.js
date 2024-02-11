@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 // Packages
 import {
@@ -15,33 +15,41 @@ export const styles = StyleSheet.create({
   },
   chatList: {
     flex: 1,
+    position:"relative",
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
+    // justifyContent:"center",
     padding: '3%',
     backgroundColor: theme.backgroundColor.lightGray,
     marginVertical: 1,
-    height:"10%"
+    height: "10%"
     // borderRadius: wp('3%'),
     // margin: '4%',
     // marginBottom: '4%',
   },
+
   avatar: {
-    width: 40,
-    height: 40,
+    width:40,
+    height:40,
     borderRadius: 50,
     marginRight: 10,
-    backgroundColor: 'transparent',
-    alignItems: 'center',
-    justifyContent: 'center',
+  
   },
-  msgDate:{
-    flex:1,
-    alignItems:'flex-end',
-    justifyContent:"flex-end"
+  msgDate: {
+    position:"absolute",
+    top:"15%",
+    right:"3%",
+display:"flex"
 
   },
-  msgTime:{
-alignItems:'flex-end',
+  sentIcon:{
+  position:"absolute",
+  top:"80%",
+  left:"80%",
+display:"flex"
+  },
+  msgTime: {
+    alignItems: 'flex-end',
   },
   addNewUser: {
     backgroundColor: theme.backgroundColor.white,
@@ -50,19 +58,21 @@ alignItems:'flex-end',
     height: 50,
     alignItems: 'center',
     justifyContent: 'center',
-    // bottom: '5%',
-    // right: '5%',
+
   },
   text: {
     fontSize: theme.fontSizes.mediumFont,
     fontWeight: 'bold',
-    textTransform:"capitalize"
+    textTransform: "capitalize"
   },
-
+  textmsg: {
+    fontSize: theme.fontSizes.smallFont,
+    fontWeight: "500",
+  },
   iconContainer: {
     flexDirection: 'column',
     justifyContent: 'space-between',
-    // marginBottom: '5%',
+
   },
   iconsContainer: {
     flexDirection: 'column',
@@ -70,8 +80,7 @@ alignItems:'flex-end',
     position: 'absolute',
     bottom: '6%',
     right: '5%',
-    // margin: '5%',
-    // alignSelf: 'flex-end',
+
   },
   icon: {
     alignItems: 'center',
