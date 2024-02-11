@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -62,4 +62,9 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     paddingLeft: '3%',
   },
+  profileImg: {
+    width: wp('25%'),
+    height: hp('12%'),
+    borderRadius: wp('25%'),
+  }
 });

@@ -6,6 +6,42 @@ import {
 const screenHeight = hp('100%');
 const screenWidth = wp('100%');
 
+const color = {
+  // Black 
+  black: '#000000',
+  darkBackground: '#121212',
+  dark: '#303030',
+  secondaryBlack: '#292929',
+  inkBlack: '#252A31',
+  text: '#171717',
+  
+  // White
+  white: '#FFFFFF',
+  primary: '#FAFAFA',
+  themeBG: '#f9f9f5',
+  text: '#ECEFF4',
+
+  // Gray
+  gray: '#CCCCCC',
+  lightGray: '#E5E4E2',
+  hexGray: '#999999',
+  border: '#bdbdbd',
+  background: '#2E3440',
+  border: '#575c66',
+  backgroundAlt: '#575c66',
+  borderAlt: '#2E3440',
+  borderAlt: '#bdbdbd',
+  candyBlue: '#eeeeee',
+  background: '#ededed',
+  backgroundAlt: '#eaeaeb',
+
+  // Others
+  inkLight: '#697D95',
+  candyBlue: '#37ECBA',
+  orange: '#E47718',
+  green: '#008000',
+};
+
 const backgroundColor = {
   darkBackground: '#121212',
   white: '#FFFFFF',
@@ -72,4 +108,5 @@ export default {
   borderColor,
   light,
   dark,
+  color
 };

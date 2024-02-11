@@ -157,7 +157,11 @@ const UserScreen = () => {
     return (
       <View>
         <TouchableOpacity
-          style={[styles.chatList]}
+          style={[styles.chatList, {
+                      backgroundColor: isDarkMode
+                        ? theme.fontColors.inkBlack
+                        : theme.backgroundColor.lightGray,
+                    },]}
           onPress={() => handleUserClick(item)}
         >
           <View>

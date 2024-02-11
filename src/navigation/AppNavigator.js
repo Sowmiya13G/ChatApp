@@ -1,11 +1,11 @@
-
+import 'react-native-reanimated';
 import 'react-native-gesture-handler';
 import React, { useContext, useEffect, useState } from 'react';
 import { StatusBar, View } from 'react-native';
-import { AppState } from 'react-native'; // Import AppState
+import { AppState } from 'react-native';
 
 // Packages
-import NetInfo from '@react-native-community/netinfo'; // Import NetInfo
+import NetInfo from '@react-native-community/netinfo';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useSelector } from 'react-redux';
@@ -67,12 +67,11 @@ const AppNavigator = () => {
       const handleAppStateChange = (nextAppState) => {
         console.log("networkStatus", nextAppState)
         if (nextAppState === 'background') {
-          // App is in the background, update status to 'offline'
           updateStatus(false);
         } else (updateStatus(true))
       };
 
-      NetInfo.fetch().then(onNetworkChange); // Initial network status
+      NetInfo.fetch().then(onNetworkChange);
 
       const unsubscribeNetwork = NetInfo.addEventListener(onNetworkChange);
       AppState.addEventListener('change', handleAppStateChange);
@@ -99,11 +98,10 @@ const AppNavigator = () => {
   };
 
   useEffect(() => {
-    // Call the initialRouteName function when userData changes
     const routeName = initialRouteName();
     console.log(routeName);
   }, [userData])
-console.log(initialRouteName(),"ffffff")
+  console.log(initialRouteName(), "ffffff")
   return (
     <View style={{ flex: 1, backgroundColor: '#000' }}>
       <StatusBar
@@ -116,7 +114,7 @@ console.log(initialRouteName(),"ffffff")
       />
 
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={initialRouteName()}>
+        <Stack.Navigator >
           <Stack.Screen
             name="SignupScreen"
             component={SignupScreen}
