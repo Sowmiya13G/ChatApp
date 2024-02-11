@@ -48,7 +48,7 @@ const UserScreen = () => {
       duration: 500, // Adjust the duration as needed
       easing: Easing.ease, // Optional easing function, you can customize it
       useNativeDriver: true,
-    }).start(()=>{
+    }).start(() => {
 
     });
   };
@@ -65,7 +65,7 @@ const UserScreen = () => {
       fadeAnim.setValue(0); // Reset the fadeAnim value
     });
   };
-  
+
   useEffect(() => {
     if (showIcons) {
       fadeInAnimation();
@@ -74,30 +74,73 @@ const UserScreen = () => {
     }
   }, [showIcons]);
 
+
+
   // Fetch Users
+  // const fetchUsers = async () => {
+  //   try {
+  //     const email = store[0].email;
+  //     const tempData = [];
+
+  //     firestore()
+  //       .collection('users')
+  //       .where('email', '!=', email)
+  //       .get()
+  //       .then(resp => {
+  //         resp.docs.forEach(doc => {
+  //           tempData.push(doc.data());
+  //         });
+  //         setUsers(tempData);
+  //       });
+  //   } catch (error) {
+  //     console.error('Error fetching users:', error);
+  //   }
+  // };
   const fetchUsers = async () => {
     try {
       const email = store[0].email;
       const tempData = [];
 
-      firestore()
+      const usersSnapshot = await firestore()
         .collection('users')
         .where('email', '!=', email)
-        .get()
-        .then(resp => {
-          resp.docs.forEach(doc => {
-            tempData.push(doc.data());
-          });
-          setUsers(tempData);
-        });
+        .get();
+
+      for (const userDoc of usersSnapshot.docs) {
+        const userData = userDoc.data();
+
+        // Fetch last message
+        const lastMessageSnapshot = await firestore()
+          .collection('chats')
+          .doc(`${store[0].userID}${userData.userID}`)
+          .collection('messages')
+          .orderBy('createdAt', 'desc')
+          .limit(1)
+          .get();
+
+        const lastMessage =
+          lastMessageSnapshot.docs.length > 0
+            ? lastMessageSnapshot.docs[0].data()
+            : null;
+
+        tempData.push({ ...userData, lastMessage });
+      }
+
+      setUsers(tempData);
     } catch (error) {
       console.error('Error fetching users:', error);
     }
   };
 
   useEffect(() => {
-    fetchUsers();
+    const timer = setInterval(() => {
+      fetchUsers();
+    }, 2000);
+
+    // Clear the interval when the component unmounts
+    // return () => clearInterval(timer);
   }, []);
+
 
   const handleUserClick = item => {
     navigation.navigate('ChatScreen', { data: item, id: store[0].userID });
@@ -105,7 +148,7 @@ const UserScreen = () => {
 
   const handleAddNewUserClick = () => {
     if (showIcons) {
-     fadeOutAnimation()
+      fadeOutAnimation()
     } else {
       setShowIcons(true)
     }
@@ -152,6 +195,16 @@ const UserScreen = () => {
       </View>
     );
   };
+  const isToday = (date) => {
+    const today = new Date();
+    const compareDate = new Date(date);
+
+    return (
+      today.getDate() === compareDate.getDate() &&
+      today.getMonth() === compareDate.getMonth() &&
+      today.getFullYear() === compareDate.getFullYear()
+    );
+  };
 
   renderBody = ({ item }) => {
     return (
@@ -164,7 +217,7 @@ const UserScreen = () => {
                     },]}
           onPress={() => handleUserClick(item)}
         >
-          <View>
+          <View style={styles.avatarFrame} >
             {item.profileImage != null ? (
               <Image
                 source={{ uri: item?.profileImage }}
@@ -208,11 +261,78 @@ const UserScreen = () => {
             >
               {item.name}
             </Text>
+            <Text
+              style={[
+                styles.textmsg,
+                {
+                  color: item?.lastMessage?.sendBy == store[0]?.userID
+                    ? theme.fontColors.hexGray
+                    : theme.fontColors.green,
+                },
+              ]}
+            >
+
+              {item?.lastMessage ? item.lastMessage?.text : ''}
+            </Text>
+          </View>
+
+          <View style={styles.msgDate} >
+            {item?.lastMessage !== null ? item?.lastMessage?.sendBy == store[0]?.userID ?
+
+              <Icon
+                name="angle-double-right"
+                size={20}
+                color={theme.fontColors.black}
+                style={styles.sentIcon}
+
+              />
+              :
+
+              <Icon
+                name="angle-double-left"
+                size={20}
+                color={theme.fontColors.black}
+                style={styles.sentIcon}
+              /> : ""
+            }
+            <Text
+              style={[
+                styles.msgTime,
+                {
+                  color: isDarkMode
+                    ? theme.fontColors.white
+                    : theme.fontColors.inkDark,
+                },
+              ]}
+            >
+
+              {item.lastMessage ? formatTimestamp(item.lastMessage.createdAt) : ''}
+            </Text>
           </View>
         </TouchableOpacity>
       </View>
     );
   };
+
+
+  const formatTimestamp = (timestamp) => {
+    const messageDate = new Date(timestamp);
+
+    if (isToday(messageDate)) {
+      return messageDate.toLocaleString('en-US', {
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true,
+      });
+    } else {
+      return messageDate.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      });
+    }
+  };
+
 
   return (
     <View
@@ -239,12 +359,12 @@ const UserScreen = () => {
         ]}
       >
         {showIcons ? (
-           <Animated.View
-           style={[
-             styles.iconContainer,
-             { opacity: fadeAnim, transform: [{ translateY: fadeAnim }] },
-           ]}
-         >
+          <Animated.View
+            style={[
+              styles.iconContainer,
+              { opacity: fadeAnim, transform: [{ translateY: fadeAnim }] },
+            ]}
+          >
             {/* First Icon */}
             <TouchableOpacity
               style={styles.addNewUser}
@@ -274,30 +394,58 @@ const UserScreen = () => {
             <Spacer height={heightPercentageToDP('2%')} />
 
             {/* Third Icon */}
-            <TouchableOpacity style={styles.addNewUser} onPress={goToProfile}>
-              <Icon
-                name="gear"
-                size={20}
-                color={theme.fontColors.black}
-                style={styles.icon}
-              />
+            <TouchableOpacity
+              style={styles.addNewUser}
+              onPress={goToProfile}
+            >
+              <Animated.View
+                style={{
+                  transform: [
+                    {
+                      rotate: fadeAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: ['0deg', '180deg'], 
+                      }),
+                    },
+                  ],
+                }}
+              >
+                <Icon
+                  name="gear"
+                  size={20}
+                  color={theme.fontColors.black}
+                  style={styles.icon}
+                />
+              </Animated.View>
             </TouchableOpacity>
             <Spacer height={heightPercentageToDP('2%')} />
-            </Animated.View>
+          </Animated.View>
         ) : null}
 
         {/* Animated Pencil Icon */}
         <TouchableOpacity
           style={[styles.addNewUser]}
           onPress={handleAddNewUserClick}
-          activeOpacity={0.7}
         >
+                     <Animated.View
+                style={{
+                  transform: [
+                    {
+                      rotate: fadeAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: ['0deg', '180deg'], 
+                      }),
+                    },
+                  ],
+                }}
+              >
           <Icon
             name="pencil"
             size={20}
             color={theme.fontColors.black}
             style={styles.icon}
           />
+          </Animated.View>
         </TouchableOpacity>
       </Animated.View>
     </View>

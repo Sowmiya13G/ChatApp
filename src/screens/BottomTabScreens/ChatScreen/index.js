@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 // Redux
 import { useDispatch } from 'react-redux';
-import { ToDetails } from '../../../redux/features/userSlice';
+import { ToDetails, setMessagesStore } from '../../../redux/features/userSlice';
 
 // Constants
 import theme from '../../../constants/theme';
@@ -18,20 +18,21 @@ import { styles } from './styles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const ChatScreen = ({ navigation: { goBack } }) => {
+  const route = useRoute();
   // Variables
   const dispatch = useDispatch();
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const [formattedLastSeen, setFormattedLastSeen] = useState();
+  const [currentUser, setCurrentUser] = useState(null);
+
   fontTheme = isDarkMode ? theme.fontColors.white : theme.fontColors.black;
   // const { userID } = route.params;
-  const route = useRoute();
 
   profileIcon = route.params.data.profileImage
 
   // UseState
   const [messages, setMessages] = useState([]);
-  console.log('route', route);
-  console.log('route', route.params.id);
-  console.log('profile', route.params.data.profileImage)
+
 
   // Functions
   const onSend = useCallback(async (messages = []) => {
@@ -40,7 +41,7 @@ const ChatScreen = ({ navigation: { goBack } }) => {
       ...msg,
       sendBy: route.params.id,
       sendTo: route.params.data.userID,
-      createdAt: Date.parse(msg.createdAt),
+      createdAt: Date(),
     };
     firestore()
       .collection('chats')
@@ -54,21 +55,6 @@ const ChatScreen = ({ navigation: { goBack } }) => {
       .add(myMSG);
   }, []);
 
-  // UseEffect
-  // useEffect(() => {
-  //   const sub = firestore()
-  //     .collection('chats')
-  //     .doc(route.params.id + route.params.data.userID)
-  //     .collection('messages')
-  //     .orderBy('createdAt', 'desc');
-  //   sub.onSnapshot(data => {
-  //     const allmesg = data.docs.map(item => {
-  //       return { ...item._data, createdAt: item._data.createdAt };
-  //     });
-  //     setMessages(allmesg);
-  //   });
-  //   return () => sub();
-  // }, []);
 
   useEffect(() => {
     const query = firestore()
@@ -81,6 +67,7 @@ const ChatScreen = ({ navigation: { goBack } }) => {
         return { ...item._data, createdAt: item._data.createdAt };
       });
       setMessages(allmesg);
+      dispatch(setMessagesStore(allmesg))
     });
     return () => unsubscribe();
   }, []);
@@ -132,16 +119,30 @@ const ChatScreen = ({ navigation: { goBack } }) => {
     }
   };
 
+  const fetchCurrentUser = async () => {
+    try {
+      const userDoc = await firestore().collection('users').doc(route.params.data.userID).get();
+      if (userDoc.exists) {
+        setCurrentUser(userDoc.data());
+        console.log(userDoc.data().lastSeen)
+      } else {
+        console.log('User document not found');
+      }
+    } catch (error) {
+      console.error('Error fetching current user:', error);
+    }
+  };
+
   const formatLastSeen = (lastSeen) => {
     const currentDate = new Date();
     const lastSeenDate = new Date(lastSeen);
-  
+    console.log("formatLastSeen", currentDate,"formatLastSeen", lastSeenDate)
     const timeDifference = currentDate - lastSeenDate;
     const seconds = Math.floor(timeDifference / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
-  
+
     if (seconds < 60) {
       return 'Online';
     } else if (minutes < 60) {
@@ -155,8 +156,22 @@ const ChatScreen = ({ navigation: { goBack } }) => {
       return new Date(lastSeen).toLocaleString('en-US', options);
     }
   };
-  
-  console.log(route.params.data.name)
+  useEffect(() => {
+    fetchCurrentUser()
+  }, [])
+  // ... (rest of your component)
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      console.log(currentUser.lastSeen, "lastSeen")
+      fetchCurrentUser()
+      const formattedTime = formatLastSeen(currentUser.lastSeen);
+      setFormattedLastSeen(formattedTime);
+    }, 6000);
+
+    return () => clearInterval(intervalId);
+  }, [route.params.data.lastSeen,new Date()]);
+
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -166,7 +181,7 @@ const ChatScreen = ({ navigation: { goBack } }) => {
         <Image source={{ uri: route.params.data.profileImage }} style={styles.headerAvatar} />
         <View>
           <Text style={styles.headerTitle}>{route.params.data.name}</Text>
-          <Text>{formatLastSeen(route.params.data.lastSeen)}</Text>
+          <Text>{formattedLastSeen}</Text>
         </View>
       </View>
       <GiftedChat
