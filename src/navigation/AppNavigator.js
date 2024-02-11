@@ -49,7 +49,7 @@ const AppNavigator = () => {
       const updateStatus = async (isConnected) => {
         try {
           await userStatusRef.update({
-            lastSeen:  Date(),
+            lastSeen: Date(),
           });
           console.log('Status successfully updated to', isConnected ? 'online' : 'offline');
         } catch (error) {
@@ -119,7 +119,7 @@ const AppNavigator = () => {
       />
 
       <NavigationContainer>
-        <Stack.Navigator >
+        <Stack.Navigator initialRouteName={initialRouteName()} >
           <Stack.Screen
             name="SignupScreen"
             component={SignupScreen}
@@ -138,7 +138,7 @@ const AppNavigator = () => {
           <Stack.Screen
             name="ChatScreen"
             component={ChatScreen}
-            options={{ title:"", headerShown: false }}
+            options={{ title: "", headerShown: false }}
           />
           <Stack.Screen
             name="SettingsScreen"

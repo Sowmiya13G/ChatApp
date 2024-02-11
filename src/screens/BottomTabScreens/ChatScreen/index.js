@@ -136,24 +136,31 @@ const ChatScreen = ({ navigation: { goBack } }) => {
   const formatLastSeen = (lastSeen) => {
     const currentDate = new Date();
     const lastSeenDate = new Date(lastSeen);
-    console.log("formatLastSeen", currentDate,"formatLastSeen", lastSeenDate)
+    console.log("FFFFFFformatLastSeen", currentDate, "formatLastSeen", lastSeenDate)
     const timeDifference = currentDate - lastSeenDate;
     const seconds = Math.floor(timeDifference / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
 
-    if (seconds < 60) {
+    if (seconds < 5) {
       return 'Online';
-    } else if (minutes < 60) {
-      return `${minutes}m ago`;
-    } else if (hours < 24) {
-      return `${hours}h ago`;
+    }
+    else if (seconds < 60 || minutes < 30) {
+      return `Last seen Recently`;
+    }
+    else if (minutes < 60) {
+      return `${minutes} ${minutes === 1 ? "Minute" : "Minutes"} ago`;
+    }
+    else if (hours < 24) {
+      return `${hours}Hour ago`;
     } else if (days === 1) {
       return 'Yesterday';
     } else {
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
       return new Date(lastSeen).toLocaleString('en-US', options);
+      // return 'Online';
+
     }
   };
   useEffect(() => {
@@ -162,14 +169,14 @@ const ChatScreen = ({ navigation: { goBack } }) => {
   // ... (rest of your component)
   useEffect(() => {
     const intervalId = setInterval(() => {
-      console.log(currentUser.lastSeen, "lastSeen")
+      // console.log(currentUser.lastSeen, "lastSeen")
       fetchCurrentUser()
       const formattedTime = formatLastSeen(currentUser.lastSeen);
       setFormattedLastSeen(formattedTime);
     }, 6000);
 
     return () => clearInterval(intervalId);
-  }, [route.params.data.lastSeen,new Date()]);
+  }, [route.params.data.lastSeen, new Date()]);
 
 
   return (

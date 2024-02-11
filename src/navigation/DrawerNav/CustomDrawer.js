@@ -77,7 +77,7 @@ const CustomDrawer = props => {
     navigation.navigate('LoginScreen');
   };
 
-  const profImg = currentUser.profileImage
+  const profImg = currentUser?.profileImage
   // Use effect
   useEffect(() => {
     fetchCurrentUser();
