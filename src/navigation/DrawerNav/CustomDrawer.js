@@ -29,7 +29,7 @@ import { setUserData } from '../../redux/features/userSlice';
 
 // Constants
 import Spacer from '../../components/Spacer';
-import theme from '../../constants/theme';
+import { color } from '../../constants/theme';
 import { ThemeContext } from '../../utils/themeContext';
 
 // styles
@@ -77,7 +77,7 @@ const CustomDrawer = props => {
     navigation.navigate('LoginScreen');
   };
 
-  const profImg = currentUser.profileImage
+  const profImg = currentUser?.profileImage
   // Use effect
   useEffect(() => {
     fetchCurrentUser();
@@ -88,20 +88,21 @@ const CustomDrawer = props => {
       {...props}
       style={{
         backgroundColor: isDarkMode
-          ? theme.backgroundColor.dark
-          : theme.backgroundColor.themeBG,
+          ? color.dark
+          : color.themeBG,
       }}>
       <View style={styles.container}>
         <View style={styles.header}>
           <View style={styles.details}>
-          {/* <Image source={profImg} style={styles.profileImg} /> */}
+          <Image source={{uri:profImg}} style={styles.profileImg} />
+          <Spacer height={hp('2%')} />
             <Text
               style={[
                 styles.text,
                 {
                   color: isDarkMode
-                    ? theme.fontColors.white
-                    : theme.fontColors.black,
+                    ? color.white
+                    : color.black,
                 },
               ]}>
               {currentUser && currentUser.name}
@@ -112,8 +113,8 @@ const CustomDrawer = props => {
                 styles.text,
                 {
                   color: isDarkMode
-                    ? theme.fontColors.white
-                    : theme.fontColors.black,
+                    ? color.white
+                    : color.black,
                 },
               ]}>
               {currentUser && currentUser.phoneNumber}
@@ -124,7 +125,7 @@ const CustomDrawer = props => {
               name={'close'}
               size={20}
               color={
-                isDarkMode ? theme.fontColors.white : theme.fontColors.black
+                isDarkMode ? color.white : color.black
               }
             />
           </TouchableOpacity>
@@ -136,7 +137,7 @@ const CustomDrawer = props => {
           <Icon
             name={'moon-o'}
             size={25}
-            color={isDarkMode ? theme.fontColors.white : theme.fontColors.black}
+            color={isDarkMode ? color.white : color.black}
           />
           <Spacer width={widthPercentageToDP('2%')} />
           <Text
@@ -144,8 +145,8 @@ const CustomDrawer = props => {
               styles.logOutText,
               {
                 color: isDarkMode
-                  ? theme.fontColors.white
-                  : theme.fontColors.black,
+                  ? color.white
+                  : color.black,
               },
             ]}>
             Night Mode
@@ -157,13 +158,13 @@ const CustomDrawer = props => {
               onValueChange={toggleTheme}
               thumbColor={
                 isDarkMode
-                  ? theme.backgroundColor.white
-                  : theme.backgroundColor.dark
+                  ? color.white
+                  : color.dark
               }
               trackColor={
                 isDarkMode
-                  ? theme.backgroundColor.white
-                  : theme.backgroundColor.dark
+                  ? color.white
+                  : color.dark
               }
             />
           </View>
@@ -172,15 +173,15 @@ const CustomDrawer = props => {
           <Icon
             name={'sign-out'}
             size={25}
-            color={isDarkMode ? theme.fontColors.white : theme.fontColors.black}
+            color={isDarkMode ? color.white : color.black}
           />
           <Text
             style={[
               styles.logOutText,
               {
                 color: isDarkMode
-                  ? theme.fontColors.white
-                  : theme.fontColors.black,
+                  ? color.white
+                  : color.black,
               },
             ]}>
             Log out

@@ -7,7 +7,7 @@ import {
 } from 'react-native-responsive-screen';
 
 // constants
-import theme from '../../../constants/theme';
+import { color, fontSizes } from '../../../constants/theme';
 
 export const styles = StyleSheet.create({
   container: {
@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
     padding: '5%',
   },
   text: {
-    fontSize: theme.fontSizes.bigFont,
+    fontSize: fontSizes.bigFont,
   },
 
   image: {
@@ -53,17 +53,17 @@ export const styles = StyleSheet.create({
   },
   textInput: {
     borderBottomWidth: 1,
-    borderColor: theme.fontColors.black,
-    fontSize: theme.fontSizes.mediumFont,
+    borderColor: color.black,
+    fontSize: fontSizes.mediumFont,
   },
   saveButton: {
-    backgroundColor: theme.backgroundColor.candyBlue,
+    backgroundColor: color.candyBlue,
     padding: wp('3%'),
     borderRadius: wp('2%'),
   },
   saveButtonText: {
-    color: theme.fontColors.black,
-    fontSize: theme.fontSizes.mediumFont,
+    color: color.black,
+    fontSize: fontSizes.mediumFont,
     alignSelf: 'center',
   },
   header: {
@@ -75,8 +75,8 @@ export const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   title: {
-    color: theme.fontColors.secondaryBlack,
-    fontSize: theme.fontSizes.bigFont,
+    color: color.secondaryBlack,
+    fontSize: fontSizes.bigFont,
     fontWeight: 'bold',
     paddingLeft: '30%',
   },

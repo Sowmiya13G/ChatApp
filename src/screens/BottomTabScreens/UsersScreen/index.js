@@ -16,7 +16,7 @@ import { useSelector } from 'react-redux';
 
 // Constants
 import Avatar from '../../../assets/Imags/avatar.webp';
-import theme from '../../../constants/theme';
+import { color } from '../../../constants/theme';
 import { ThemeContext } from '../../../utils/themeContext';
 
 // Components
@@ -29,7 +29,7 @@ const UserScreen = () => {
   // Variables
   const navigation = useNavigation();
   const { isDarkMode } = useContext(ThemeContext);
-  fontTheme = isDarkMode ? theme.fontColors.white : theme.fontColors.black;
+  fontTheme = isDarkMode ? color.white : color.black;
 
   // Use State
   const [users, setUsers] = useState([]);
@@ -177,19 +177,19 @@ const UserScreen = () => {
           styles.header,
           {
             backgroundColor: isDarkMode
-              ? theme.backgroundColor.dark
-              : theme.backgroundColor.themeBG,
+              ?color.dark
+              :color.themeBG,
           },
         ]}>
         {/* <TouchableOpacity onPress={() => goBack()} style={styles.backIcon}>
-          <Icon name="angle-left" size={30} color={theme.fontColors.black} />
+          <Icon name="angle-left" size={30} color={color.black} />
         </TouchableOpacity> */}
         <Text style={[
           styles.title,
           {
             color: isDarkMode
-              ? theme.fontColors.white
-              : theme.fontColors.black,
+              ? color.white
+              : color.black,
           }
         ]}>PikUp</Text>
       </View>
@@ -212,8 +212,8 @@ const UserScreen = () => {
         <TouchableOpacity
           style={[styles.chatList, {
                       backgroundColor: isDarkMode
-                        ? theme.fontColors.inkBlack
-                        : theme.backgroundColor.lightGray,
+                        ? color.inkBlack
+                        :color.lightGray,
                     },]}
           onPress={() => handleUserClick(item)}
         >
@@ -237,8 +237,8 @@ const UserScreen = () => {
                     styles.text,
                     {
                       color: isDarkMode
-                        ? theme.fontColors.white
-                        : theme.fontColors.black,
+                        ? color.white
+                        : color.black,
                     },
                   ]}
                 >
@@ -254,8 +254,8 @@ const UserScreen = () => {
                 styles.text,
                 {
                   color: isDarkMode
-                    ? theme.fontColors.white
-                    : theme.fontColors.black,
+                    ? color.white
+                    : color.black,
                 },
               ]}
             >
@@ -266,8 +266,8 @@ const UserScreen = () => {
                 styles.textmsg,
                 {
                   color: item?.lastMessage?.sendBy == store[0]?.userID
-                    ? theme.fontColors.hexGray
-                    : theme.fontColors.green,
+                    ? color.hexGray
+                    : color.green,
                 },
               ]}
             >
@@ -282,7 +282,7 @@ const UserScreen = () => {
               <Icon
                 name="angle-double-right"
                 size={20}
-                color={theme.fontColors.black}
+                color={color.black}
                 style={styles.sentIcon}
 
               />
@@ -291,7 +291,7 @@ const UserScreen = () => {
               <Icon
                 name="angle-double-left"
                 size={20}
-                color={theme.fontColors.black}
+                color={color.black}
                 style={styles.sentIcon}
               /> : ""
             }
@@ -300,8 +300,8 @@ const UserScreen = () => {
                 styles.msgTime,
                 {
                   color: isDarkMode
-                    ? theme.fontColors.white
-                    : theme.fontColors.inkDark,
+                    ? color.white
+                    : color.inkDark,
                 },
               ]}
             >
@@ -340,9 +340,9 @@ const UserScreen = () => {
         styles.container,
         {
           backgroundColor: isDarkMode
-            ? theme.backgroundColor.dark
-            : theme.backgroundColor.themeBG,
-        },
+            ?color.dark
+            :color.themeBG,
+        },color
       ]}
     >
       <FlatList
@@ -373,7 +373,7 @@ const UserScreen = () => {
               <Icon
                 name="user"
                 size={20}
-                color={theme.fontColors.black}
+                color={color.black}
                 style={styles.icon}
               />
             </TouchableOpacity>
@@ -387,7 +387,7 @@ const UserScreen = () => {
               <Icon
                 name="user-plus"
                 size={20}
-                color={theme.fontColors.black}
+                color={color.black}
                 style={styles.icon}
               />
             </TouchableOpacity>
@@ -413,7 +413,7 @@ const UserScreen = () => {
                 <Icon
                   name="gear"
                   size={20}
-                  color={theme.fontColors.black}
+                  color={color.black}
                   style={styles.icon}
                 />
               </Animated.View>
@@ -442,7 +442,7 @@ const UserScreen = () => {
           <Icon
             name="pencil"
             size={20}
-            color={theme.fontColors.black}
+            color={color.black}
             style={styles.icon}
           />
           </Animated.View>

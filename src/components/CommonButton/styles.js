@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import theme from '../../constants/theme';
+import { color, fontSizes } from '../../constants/theme';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -12,21 +12,21 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 2,
     marginBottom: '10%',
-    backgroundColor: theme.backgroundColor.secondaryBlack,
+    backgroundColor: color.secondaryBlack,
   },
   optionButton: {
     alignItems: 'center',
     justifyContent: 'center',
     padding: '4%',
     borderRadius: 20,
-    borderColor: theme.backgroundColor.secondaryBlack,
+    borderColor: color.secondaryBlack,
     borderWidth: 2,
     marginBottom: '5%',
   },
   logInButtonText: {
-    color: theme.fontColors.white,
+    color: color.white,
   },
   optionButtonText: {
-    color: theme.fontColors.secondaryBlack,
+    color: color.secondaryBlack,
   },
 });

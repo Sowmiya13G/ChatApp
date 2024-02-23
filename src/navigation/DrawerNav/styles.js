@@ -3,7 +3,7 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import theme from '../../constants/theme';
+import { color,fontSizes } from '../../constants/theme';
 
 export const styles = StyleSheet.create({
   container: {
@@ -17,13 +17,13 @@ export const styles = StyleSheet.create({
     position: 'absolute',
   },
   userName: {
-    color: theme.fontColors.secondaryBlack,
-    fontSize: theme.fontSizes.bigFont,
+    color: color.secondaryBlack,
+    fontSize: fontSizes.bigFont,
   },
   text: {
-    color: theme.fontColors.secondaryBlack,
+    color: color.secondaryBlack,
     opacity: 0.5,
-    fontSize: theme.fontSizes.mediumFontText,
+    fontSize: fontSizes.mediumFontText,
   },
   details: {
     display: 'flex',
@@ -47,7 +47,7 @@ export const styles = StyleSheet.create({
     left: '6%',
   },
   nightModeText: {
-    fontSize: theme.fontSizes.mediumFontText,
+    fontSize: fontSizes.mediumFontText,
     fontWeight: 'bold',
     marginRight: '5%',
   },
@@ -58,7 +58,7 @@ export const styles = StyleSheet.create({
     left: '6%',
   },
   logOutText: {
-    fontSize: theme.fontSizes.mediumFontText,
+    fontSize: fontSizes.mediumFontText,
     fontWeight: 'bold',
     paddingLeft: '3%',
   },

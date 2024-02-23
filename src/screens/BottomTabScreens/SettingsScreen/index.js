@@ -34,14 +34,14 @@ import { styles } from './styles';
 import Spacer from '../../../components/Spacer';
 
 // Constants
-import theme from '../../../constants/theme';
+import { color } from '../../../constants/theme';
 import { ThemeContext } from '../../../utils/themeContext';
 import { checkAndRequestPermissions } from '../../../utils/androidPermissions';
 
 const SettingsScreen = ({ navigation: { goBack } }) => {
   // Variables
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
-  fontTheme = isDarkMode ? theme.fontColors.white : theme.fontColors.black;
+  fontTheme = isDarkMode ? color.white : color.black;
   const dispatch = useDispatch();
 
   // Selectors
@@ -223,14 +223,14 @@ const SettingsScreen = ({ navigation: { goBack } }) => {
     return (
       <View style={styles.header}>
         <TouchableOpacity onPress={() => goBack()} style={styles.backIcon}>
-          <Icon name="angle-left" size={30} color={isDarkMode ? theme.fontColors.white : theme.fontColors.black} />
+          <Icon name="angle-left" size={30} color={isDarkMode ? color.white : color.black} />
         </TouchableOpacity>
         <Text style={[
           styles.title,
           {
             color: isDarkMode
-              ? theme.fontColors.white
-              : theme.fontColors.black,
+              ? color.white
+              : color.black,
           },
         ]}>USER PROFILE</Text>
       </View>
@@ -251,8 +251,8 @@ const SettingsScreen = ({ navigation: { goBack } }) => {
                 size={100}
                 color={
                   isDarkMode
-                    ? theme.fontColors.hexGray
-                    : theme.fontColors.inkBlack
+                    ? color.hexGray
+                    : color.inkBlack
                 }
                 style={styles.icon}
               />
@@ -267,8 +267,8 @@ const SettingsScreen = ({ navigation: { goBack } }) => {
                   styles.textInput,
                   {
                     color: isDarkMode
-                      ? theme.fontColors.white
-                      : theme.fontColors.black,
+                      ? color.white
+                      : color.black,
                   },
                 ]}
                 value={editedName}
@@ -279,8 +279,8 @@ const SettingsScreen = ({ navigation: { goBack } }) => {
                   styles.textInput,
                   {
                     color: isDarkMode
-                      ? theme.fontColors.white
-                      : theme.fontColors.black,
+                      ? color.white
+                      : color.black,
                   },
                 ]}
                 value={editedPhoneNumber}
@@ -298,8 +298,8 @@ const SettingsScreen = ({ navigation: { goBack } }) => {
                   styles.text,
                   {
                     color: isDarkMode
-                      ? theme.fontColors.white
-                      : theme.fontColors.black,
+                      ? color.white
+                      : color.black,
                   },
                 ]}>
                 {currentUser ? currentUser.name : 'Loading...'}
@@ -310,8 +310,8 @@ const SettingsScreen = ({ navigation: { goBack } }) => {
                   styles.text,
                   {
                     color: isDarkMode
-                      ? theme.fontColors.white
-                      : theme.fontColors.black,
+                      ? color.white
+                      : color.black,
                   },
                 ]}>
                 {currentUser ? currentUser.phoneNumber : 'Loading...'}
@@ -324,7 +324,7 @@ const SettingsScreen = ({ navigation: { goBack } }) => {
               name="edit"
               size={20}
               color={
-                isDarkMode ? theme.fontColors.white : theme.fontColors.black
+                isDarkMode ? color.white : color.black
               }
             />
           </TouchableOpacity>
@@ -339,8 +339,8 @@ const SettingsScreen = ({ navigation: { goBack } }) => {
         styles.container,
         {
           backgroundColor: isDarkMode
-            ? theme.backgroundColor.dark
-            : theme.backgroundColor.themeBG,
+            ? color.dark
+            : color.themeBG,
         },
       ]}>
       <Spacer height={hp('3%')} />

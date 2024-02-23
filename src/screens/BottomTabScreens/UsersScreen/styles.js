@@ -7,7 +7,7 @@ import {
 } from 'react-native-responsive-screen';
 
 // constants
-import theme from '../../../constants/theme';
+import { color, fontSizes } from '../../../constants/theme';
 
 export const styles = StyleSheet.create({
   container: {
@@ -18,14 +18,9 @@ export const styles = StyleSheet.create({
     position:"relative",
     flexDirection: 'row',
     alignItems: 'center',
-    // justifyContent:"center",
     padding: '3%',
-    // backgroundColor: theme.backgroundColor.gray,
     marginVertical: 1,
     height: "10%"
-    // borderRadius: wp('3%'),
-    // margin: '4%',
-    // marginBottom: '4%',
   },
 
   avatar: {
@@ -52,7 +47,7 @@ display:"flex"
     alignItems: 'flex-end',
   },
   addNewUser: {
-    backgroundColor: theme.backgroundColor.white,
+    backgroundColor: color.white,
     borderRadius: 50,
     width: 50,
     height: 50,
@@ -61,12 +56,12 @@ display:"flex"
 
   },
   text: {
-    fontSize: theme.fontSizes.mediumFont,
+    fontSize: fontSizes.mediumFont,
     fontWeight: 'bold',
     textTransform: "capitalize"
   },
   textmsg: {
-    fontSize: theme.fontSizes.smallFont,
+    fontSize: fontSizes.smallFont,
     fontWeight: "500",
   },
   iconContainer: {
@@ -95,8 +90,8 @@ display:"flex"
     alignSelf: 'flex-start',
   },
   title: {
-    color: theme.fontColors.secondaryBlack,
-    fontSize: theme.fontSizes.bigFont,
+    color: color.secondaryBlack,
+    fontSize: fontSizes.bigFont,
     fontWeight: 'bold',
     alignSelf: 'center',
   },

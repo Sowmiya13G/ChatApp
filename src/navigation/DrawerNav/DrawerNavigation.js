@@ -15,7 +15,7 @@ import ChatScreen from '../../screens/BottomTabScreens/ChatScreen';
 import SettingsScreen from '../../screens/BottomTabScreens/SettingsScreen';
 
 // Constanst
-import theme from '../../constants/theme';
+import { color } from '../../constants/theme';
 import {ThemeContext} from '../../utils/themeContext';
 import UserScreen from '../../screens/BottomTabScreens/UsersScreen';
 
@@ -32,18 +32,18 @@ const DrawerNavigator = () => {
       receipt-long
       drawerStyle={{
         backgroundColor: isDarkMode
-          ? theme.backgroundColor.dark
-          : theme.backgroundColor.themeBG,
+          ? color.dark
+          : color.themeBG,
       }}
       screenOptions={({route}) => ({
         headerShown: false,
         drawerActiveBackgroundColor: 'transparent',
         drawerActiveTintColor: isDarkMode
-          ? theme.fontColors.orange
-          : theme.fontColors.candyBlue,
+          ? color.orange
+          : color.candyBlue,
         drawerInactiveTintColor: isDarkMode
-          ? theme.fontColors.white
-          : theme.fontColors.black,
+          ? color.white
+          : color.black,
         drawerLabelStyle: {marginLeft: -20, fontSize: 18},
         drawerIcon: ({focused, color, size}) => {
           let iconName;

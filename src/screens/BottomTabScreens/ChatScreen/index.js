@@ -11,7 +11,7 @@ import { useDispatch } from 'react-redux';
 import { ToDetails, setMessagesStore } from '../../../redux/features/userSlice';
 
 // Constants
-import theme from '../../../constants/theme';
+import { color } from '../../../constants/theme';
 import { ThemeContext } from '../../../utils/themeContext';
 //Styles
 import { styles } from './styles';
@@ -25,7 +25,7 @@ const ChatScreen = ({ navigation: { goBack } }) => {
   const [formattedLastSeen, setFormattedLastSeen] = useState();
   const [currentUser, setCurrentUser] = useState(null);
 
-  fontTheme = isDarkMode ? theme.fontColors.white : theme.fontColors.black;
+  fontTheme = isDarkMode ? color.white : theme.fontColors.black;
   // const { userID } = route.params;
 
   profileIcon = route.params.data.profileImage

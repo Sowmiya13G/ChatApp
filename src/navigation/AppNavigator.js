@@ -20,11 +20,10 @@ import UserScreen from '../screens/BottomTabScreens/UsersScreen';
 import SettingsScreen from '../screens/BottomTabScreens/SettingsScreen';
 
 // Navigators
-import { BottomTabNavigator } from './TabNavigator';
 import DrawerNavigator from './DrawerNav/DrawerNavigation';
 
 // Constants
-import theme from '../constants/theme';
+import { color } from '../constants/theme';
 import { ThemeContext } from '../utils/themeContext';
 
 const Stack = createStackNavigator();
@@ -112,8 +111,8 @@ const AppNavigator = () => {
       <StatusBar
         backgroundColor={
           isDarkMode
-            ? theme.backgroundColor.dark
-            : theme.backgroundColor.themeBG
+            ? color.dark
+            : color.themeBG
         }
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
       />

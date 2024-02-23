@@ -12,7 +12,6 @@ import TouchID from 'react-native-touch-id';
 import Biometrics from 'react-native-biometrics';
 
 // Styles
-import { styles } from './styles';
 
 // Components
 import CommonButton from '../../../components/CommonButton';

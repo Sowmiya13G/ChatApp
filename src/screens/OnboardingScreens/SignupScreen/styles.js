@@ -7,8 +7,7 @@ import {
 } from 'react-native-responsive-screen';
 
 // constants
-import theme from '../../../constants/theme';
-
+import { color, fontSizes } from '../../../constants/theme';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -17,7 +16,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     // justifyContent: 'space-around',
-    backgroundColor: theme.backgroundColor.themeBG,
+    backgroundColor: color.themeBG,
     width: '100%',
     height: '100%',
   },
@@ -36,11 +35,11 @@ export const styles = StyleSheet.create({
   },
   inputfiled: {
     width: '85%',
-    borderColor: theme.borderColor.candyBlue,
+    borderColor: color.candyBlue,
     borderWidth: 1,
     height: 50,
     marginBottom: 20,
-    backgroundColor: theme.backgroundColor.white,
+    backgroundColor: color.white,
     paddingLeft: 20,
     borderRadius: 50,
     color: '#000',
@@ -48,10 +47,10 @@ export const styles = StyleSheet.create({
   button: {
     backgroundColor: '#20d5d8',
     width: '85%',
-    borderColor: theme.borderColor.candyBlue,
+    borderColor: color.candyBlue,
     borderWidth: 1,
     height: 50,
-    color: theme.fontColors.white,
+    color: color.white,
     alignContent: 'center',
     justifyContent: 'center',
     marginBottom: 20,
@@ -82,11 +81,11 @@ export const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 50,
     borderColor: '#20d5d8',
-    backgroundColor: theme.backgroundColor.white,
+    backgroundColor: color.white,
   },
   signuplabel: {
     color: '#cacbcf',
-    backgroundColor: theme.backgroundColor.white,
+    backgroundColor: color.white,
     padding: 10,
     position: 'absolute',
     backgroundColor: '#f9f9f5',
