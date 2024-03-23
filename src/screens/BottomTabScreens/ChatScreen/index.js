@@ -1,12 +1,12 @@
 import React, { useState, useCallback, useEffect, useContext } from 'react';
 import { View, Text, Image, Platform } from 'react-native';
 // Packages
-import { GiftedChat, Send, Bubble } from 'react-native-gifted-chat';
+import { GiftedChat, Send, Bubble, InputToolbar, Composer } from 'react-native-gifted-chat';
 import firestore from '@react-native-firebase/firestore';
 import { useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 // Redux
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ToDetails, setMessagesStore } from '../../../redux/features/userSlice';
 
 // Constants
@@ -23,23 +23,38 @@ import { widthPercentageToDP } from 'react-native-responsive-screen';
 
 const ChatScreen = ({ navigation: { goBack } }) => {
   const route = useRoute();
+  const userData = useSelector((state) => state.users.userData);
+
   // Variables
   const dispatch = useDispatch();
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const [formattedLastSeen, setFormattedLastSeen] = useState();
   const [currentUser, setCurrentUser] = useState(null);
+  const [isTyping, setIsTyping] = useState(false);
+  const [isTypingStatus, setIsTypingStatus] = useState(false);
 
   fontTheme = isDarkMode ? theme.fontColors.white : theme.fontColors.black;
   // const { userID } = route.params;
-
+  const UserID = userData[0]?.userID;
   profileIcon = route.params.data.profileImage
-  console.log(route.params, "sddsdsd")
   // UseState
   const [messages, setMessages] = useState([]);
 
+  const userStatusRef = firestore().collection('users').doc(UserID);
 
-
-
+  const updateStatus = async () => {
+    try {
+      await userStatusRef.update({
+        isTyping: isTyping,
+      });
+      console.log(' isTyping Status successfully updated ');
+    } catch (error) {
+      console.error('Error updating lastSeen:', error);
+    }
+  }
+  useEffect(() => {
+    updateStatus()
+  }, [isTyping])
 
 
 
@@ -63,6 +78,7 @@ const ChatScreen = ({ navigation: { goBack } }) => {
       .doc('' + route.params.data.userID + route.params.id)
       .collection('messages')
       .add(myMSG);
+    setIsTyping(false);
   }, []);
 
 
@@ -105,7 +121,6 @@ const ChatScreen = ({ navigation: { goBack } }) => {
   // Custom render message
   const renderMessage = (props) => {
     const { currentMessage } = props;
-    console.log(props, "sdsdsd")
     if (route.params.id) {
       return (
         <View style={styles.messageContainer}>
@@ -138,7 +153,8 @@ const ChatScreen = ({ navigation: { goBack } }) => {
       const userDoc = await firestore().collection('users').doc(route.params.data.userID).get();
       if (userDoc.exists) {
         setCurrentUser(userDoc.data());
-        console.log(userDoc.data().lastSeen)
+        setIsTypingStatus(userDoc.data()?.isTyping)
+        console.log(userDoc.data()?.isTyping, 'User document not found');
       } else {
         console.log('User document not found');
       }
@@ -150,7 +166,6 @@ const ChatScreen = ({ navigation: { goBack } }) => {
   const formatLastSeen = (lastSeen) => {
     const currentDate = new Date();
     const lastSeenDate = new Date(lastSeen);
-    console.log("FFFFFFformatLastSeen", currentDate, "formatLastSeen", lastSeenDate)
     const timeDifference = currentDate - lastSeenDate;
     const seconds = Math.floor(timeDifference / 1000);
     const minutes = Math.floor(seconds / 60);
@@ -183,14 +198,22 @@ const ChatScreen = ({ navigation: { goBack } }) => {
   // ... (rest of your component)
   useEffect(() => {
     const intervalId = setInterval(() => {
-      // console.log(currentUser.lastSeen, "lastSeen")
       fetchCurrentUser()
       const formattedTime = formatLastSeen(currentUser.lastSeen);
       setFormattedLastSeen(formattedTime);
-    }, 6000);
+    }, 3000);
 
     return () => clearInterval(intervalId);
   }, [route.params.data.lastSeen, new Date()]);
+
+
+  const onInputTextChanged = (text) => {
+    if (text.length > 0 && !isTyping) {
+      setIsTyping(true); // Set isTyping state to true when user starts typing
+    } else if (text.length === 0 && isTyping) {
+      setIsTyping(false); // Set isTyping state to false when user stops typing
+    }
+  };
 
   const renderChatEmpty = () => (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', transform: [{ rotate: '180deg' }] }}>
@@ -211,6 +234,39 @@ const ChatScreen = ({ navigation: { goBack } }) => {
         <Text>Send Image</Text>
       </View>
     </TouchableOpacity>
+  );
+  const renderInputToolbar = (props) => (
+    <InputToolbar
+      {...props}
+      containerStyle={{
+        backgroundColor: '#000',
+        borderTopWidth: 1,
+        borderTopColor: '#ccc',
+        // width: widthPercentageToDP("100%"),
+        // alignItems: 'center',
+        // justifyContent:"center"
+      }}
+      primaryStyle={{ alignItems: 'center', }}
+    >
+      {/* <Composer
+        {...props}
+        placeholder="Type a message..."
+        textInputStyle={{
+          width: widthPercentageToDP("10%"),
+          color: '#fff', fontSize: 16,
+
+        }}
+      /> */}
+      {/* <Send {...props} style={styles.sendContainer}>
+        <Image style={{
+          width: widthPercentageToDP("5%"),
+          height: widthPercentageToDP("5%"),
+
+        }}
+          resizeMode='contain'
+          source={sendIcon} />
+      </Send> */}
+    </InputToolbar>
   );
 
   return (
@@ -234,22 +290,27 @@ const ChatScreen = ({ navigation: { goBack } }) => {
         }}
         textInputProps={{
           style: {
-            width: widthPercentageToDP("80%"),
-            backgroundColor: '#303841', // background color of the text input
+            width: widthPercentageToDP("90%"),
+            // backgroundColor: '#303841', // background color of the text input
+            // backgroundColor: '#000', // background color of the text input
             borderRadius: 10, // border radius of the text input
+            // marginorizontal: widthPercentageToDP("5%"), 
             paddingHorizontal: widthPercentageToDP("2%"), // horizontal padding inside the text input
             paddingVertical: 8, // vertical padding inside the text input
             fontSize: 16, // font size of the text input
             margin: 2,
             color: "#fff"
           },
-          placeholderTextColor: '#ddd', // color of the placeholder text
+          placeholderTextColor: '#dddd', // color of the placeholder text
           placeholder: 'Type your message...', // placeholder text
         }}
         renderSend={renderSend}
         keyboardShouldPersistTaps="handled"
         renderMessage={renderMessage}
         renderChatEmpty={renderChatEmpty}
+        renderInputToolbar={renderInputToolbar}
+        isTyping={isTypingStatus}
+        onInputTextChanged={onInputTextChanged}
         imageProps={{
           resizeMode: 'cover', // Example of a prop passed to the image component
           style: { width: 200, height: 150 }, // Example of styling applied to the image component

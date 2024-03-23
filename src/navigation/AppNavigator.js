@@ -106,7 +106,7 @@ const AppNavigator = () => {
     const routeName = initialRouteName();
     console.log(routeName);
   }, [userData])
-  console.log(initialRouteName(), "ffffff")
+  
   return (
     <View style={{ flex: 1, backgroundColor: '#000' }}>
       <StatusBar

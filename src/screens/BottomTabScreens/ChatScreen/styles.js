@@ -24,8 +24,11 @@ export const styles = StyleSheet.create({
     },
     sendContainer: {
         position: 'absolute',
-        right: '5%',
-        justifyContent: 'center'
+        right: '3%',
+        justifyContent:"center",
+        // marginBottom:wp("90%")
+        bottom:"10%",
+        // backgroundColor:"red"
     },
     input: {
         color: theme.fontColors.black
