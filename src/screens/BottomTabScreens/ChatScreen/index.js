@@ -1,11 +1,10 @@
 import React, { useState, useCallback, useEffect, useContext } from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, Platform } from 'react-native';
 // Packages
 import { GiftedChat, Send, Bubble } from 'react-native-gifted-chat';
 import firestore from '@react-native-firebase/firestore';
 import { useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
 // Redux
 import { useDispatch } from 'react-redux';
 import { ToDetails, setMessagesStore } from '../../../redux/features/userSlice';
@@ -13,9 +12,14 @@ import { ToDetails, setMessagesStore } from '../../../redux/features/userSlice';
 // Constants
 import theme from '../../../constants/theme';
 import { ThemeContext } from '../../../utils/themeContext';
+import Avatar from '../../../assets/Imags/avatar.webp';
+import sendIcon from '../../../assets/Imags/send.png';
+
+
 //Styles
 import { styles } from './styles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { widthPercentageToDP } from 'react-native-responsive-screen';
 
 const ChatScreen = ({ navigation: { goBack } }) => {
   const route = useRoute();
@@ -29,9 +33,15 @@ const ChatScreen = ({ navigation: { goBack } }) => {
   // const { userID } = route.params;
 
   profileIcon = route.params.data.profileImage
-
+  console.log(route.params, "sddsdsd")
   // UseState
   const [messages, setMessages] = useState([]);
+
+
+
+
+
+
 
 
   // Functions
@@ -82,30 +92,34 @@ const ChatScreen = ({ navigation: { goBack } }) => {
   // Render send button
   const renderSend = (props) => (
     <Send {...props} containerStyle={styles.sendContainer}>
-      <View>
-        <Text style={styles.text}>Send</Text>
-      </View>
+      <Image style={{
+        width: widthPercentageToDP("5%"),
+        height: widthPercentageToDP("5%"),
+
+      }}
+        resizeMode='contain'
+        source={sendIcon} />
     </Send>
   );
 
   // Custom render message
   const renderMessage = (props) => {
     const { currentMessage } = props;
-
+    console.log(props, "sdsdsd")
     if (route.params.id) {
       return (
         <View style={styles.messageContainer}>
           {currentMessage.user._id !== route.params.id && (
             <Image
-              source={{ uri: profileIcon }}
+              source={{ uri: route?.params?.data?.profileImage }}
               style={styles.userAvatar}
             />
           )}
           <Bubble
             {...props}
             wrapperStyle={{
-              left: { backgroundColor: '#f0f0f0', margin: 5 },
-              right: { backgroundColor: '#0084ff', margin: 5 },
+              left: { backgroundColor: '#fefefefe', margin: 5 },
+              right: { backgroundColor: '#22313f', margin: 5 },
             }}
             textStyle={{
               left: { color: '#000' },
@@ -178,6 +192,26 @@ const ChatScreen = ({ navigation: { goBack } }) => {
     return () => clearInterval(intervalId);
   }, [route.params.data.lastSeen, new Date()]);
 
+  const renderChatEmpty = () => (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', transform: [{ rotate: '180deg' }] }}>
+      <Image source={{ uri: "https://cdni.iconscout.com/illustration/premium/thumb/no-messages-8044859-6430768.png" }}
+        style={{
+          width: widthPercentageToDP("40%"),
+          height: widthPercentageToDP("40%")
+        }}
+        resizeMode='contain'
+      />
+      <Text>No messages yet.</Text>
+    </View>
+  );
+
+  const renderCustomActions = () => (
+    <TouchableOpacity >
+      <View style={{ padding: 10 }}>
+        <Text>Send Image</Text>
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
     <View style={styles.container}>
@@ -185,7 +219,8 @@ const ChatScreen = ({ navigation: { goBack } }) => {
         {/* <TouchableOpacity onPress={() => goBack()} style={styles.backIcon}>
           <Icon name="angle-left" size={30} color={isDarkMode ? theme.fontColors.white : theme.fontColors.black} />
         </TouchableOpacity> */}
-        <Image source={{ uri: route.params.data.profileImage }} style={styles.headerAvatar} />
+        <Image source={profileIcon !== null ? { uri: profileIcon } : Avatar}
+          style={styles.headerAvatar} />
         <View>
           <Text style={styles.headerTitle}>{route.params.data.name}</Text>
           <Text>{formattedLastSeen}</Text>
@@ -197,9 +232,29 @@ const ChatScreen = ({ navigation: { goBack } }) => {
         user={{
           _id: route.params.id,
         }}
-        textInputProps={styles.input}
+        textInputProps={{
+          style: {
+            width: widthPercentageToDP("80%"),
+            backgroundColor: '#303841', // background color of the text input
+            borderRadius: 10, // border radius of the text input
+            paddingHorizontal: widthPercentageToDP("2%"), // horizontal padding inside the text input
+            paddingVertical: 8, // vertical padding inside the text input
+            fontSize: 16, // font size of the text input
+            margin: 2,
+            color: "#fff"
+          },
+          placeholderTextColor: '#ddd', // color of the placeholder text
+          placeholder: 'Type your message...', // placeholder text
+        }}
         renderSend={renderSend}
+        keyboardShouldPersistTaps="handled"
         renderMessage={renderMessage}
+        renderChatEmpty={renderChatEmpty}
+        imageProps={{
+          resizeMode: 'cover', // Example of a prop passed to the image component
+          style: { width: 200, height: 150 }, // Example of styling applied to the image component
+        }}
+
       />
     </View>
 

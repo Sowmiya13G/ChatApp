@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
         padding: '5%',
     },
     text: {
-        color: '#007BFF',
+        color: '#22313f',
         fontSize: theme.fontSizes.mediumFont,
         fontWeight: 'bold'
     },
@@ -29,6 +29,7 @@ export const styles = StyleSheet.create({
     },
     input: {
         color: theme.fontColors.black
+
     },
     messageContainer: {
         flexDirection: 'row',
@@ -36,34 +37,34 @@ export const styles = StyleSheet.create({
         marginLeft: 10,
     },
     userAvatar: {
-        width: wp('10%'),
-        height: hp('5%'),
+        width: wp('8%'),
+        height: wp('8%'),
         borderRadius: wp('5%'),
         marginRight: 10,
         alignSelf: 'center'
     },
     headerContainer: {
         flexDirection: 'row',
-        minHeight:hp("8%"),
+        minHeight: hp("8%"),
         alignItems: 'center',
-        backgroundColor:"grey",
-        paddingVertical:4 ,
-        paddingHorizontal:wp(5),
-      },
-      headerAvatar: {
+        backgroundColor: "grey",
+        paddingVertical: 4,
+        paddingHorizontal: wp(5),
+    },
+    headerAvatar: {
         width: 40,
         height: 40,
         borderRadius: 20,
         marginRight: 20,
-      },
-      headerTitle: {
+    },
+    headerTitle: {
         fontSize: 18,
         fontWeight: 'bold',
         color: '#fff',
-        textTransform:"capitalize"
-      },
-      backIcon: {
+        textTransform: "capitalize"
+    },
+    backIcon: {
         alignSelf: 'flex-start',
-        marginRight:20
-      },
+        marginRight: 20
+    },
 });

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   ImageBackground,
   Image,
@@ -12,10 +12,10 @@ import {
 // Packages
 import firestore from '@react-native-firebase/firestore';
 import uuid from 'react-native-uuid';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 // Styles
-import {styles} from './styles';
+import { styles } from './styles';
 
 // Components
 import CommonButton from '../../../components/CommonButton';
@@ -31,7 +31,7 @@ const SignupScreen = () => {
   const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [confirmPassword, setconfirmPassword] = useState('');
-console.log(nameValue)
+  console.log(nameValue)
   // Functions
   const register = () => {
     const UserID = uuid.v4();
@@ -45,7 +45,7 @@ console.log(nameValue)
         name: nameValue,
         confirmPassword: confirmPassword,
         userID: UserID,
-        profileImage:"https://firebasestorage.googleapis.com/v0/b/chatapp-2ff01.appspot.com/o/profile_images%2F48fa7767-0248-41ef-9b4c-fb07e684fbfe.jpg?alt=media&token=cd89d15f-e904-4e06-94d6-4947fdd6ff77"
+        profileImage: null
       })
       .then(resp => {
         console.log(resp);
@@ -65,7 +65,7 @@ console.log(nameValue)
   return (
     <View style={styles.body}>
       <Text style={styles.header}>
-        Pik<Text style={[styles.header, {color: '#20d5d8'}]}>up</Text>
+        Pik<Text style={[styles.header, { color: '#20d5d8' }]}>up</Text>
       </Text>
 
       <TextInput
@@ -73,7 +73,7 @@ console.log(nameValue)
         placeholderTextColor={'grey'}
         style={styles.inputfiled}
         onChangeText={value => setEmailId(value)}></TextInput>
-        <TextInput
+      <TextInput
         placeholder="name"
         placeholderTextColor={'grey'}
         style={styles.inputfiled}
@@ -98,16 +98,16 @@ console.log(nameValue)
         <CommonButton logInButton label="SIGN UP" handlePress={register} />
         <CommonButton logInButton label="LOG IN" handlePress={goToLogin} />
       </View>
-      <Text style={[styles.textlabel, {marginTop: 0}]}>Forget Password?</Text>
+      <Text style={[styles.textlabel, { marginTop: 0 }]}>Forget Password?</Text>
       <View style={styles.signUp}>
         <Text style={styles.signuplabel}>Sign up With</Text>
       </View>
       <View style={styles.buttonConatiner}>
         <TouchableOpacity style={styles.signbtn}>
-          <Text style={{color: '#20d5d8'}}>GOOGLE</Text>
+          <Text style={{ color: '#20d5d8' }}>GOOGLE</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.signbtn}>
-          <Text style={{color: '#20d5d8'}}>EMAIL</Text>
+          <Text style={{ color: '#20d5d8' }}>EMAIL</Text>
         </TouchableOpacity>
       </View>
     </View>

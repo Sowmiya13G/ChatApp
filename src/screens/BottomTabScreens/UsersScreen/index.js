@@ -142,7 +142,7 @@ const UserScreen = () => {
   }, []);
 
 
-  const handleUserClick = item => {
+  const handleUserClick = (item) => {
     navigation.navigate('ChatScreen', { data: item, id: store[0].userID });
   };
 
@@ -211,10 +211,10 @@ const UserScreen = () => {
       <View>
         <TouchableOpacity
           style={[styles.chatList, {
-                      backgroundColor: isDarkMode
-                        ? theme.fontColors.inkBlack
-                        : theme.backgroundColor.lightGray,
-                    },]}
+            backgroundColor: isDarkMode
+              ? theme.fontColors.inkBlack
+              : theme.backgroundColor.lightGray,
+          },]}
           onPress={() => handleUserClick(item)}
         >
           <View style={styles.avatarFrame} >
@@ -225,26 +225,11 @@ const UserScreen = () => {
                 alt="avatar"
               />
             ) : (
-              <LinearGradient
-                colors={['#fefefe', getRandomLightMatteColor()]}
-                style={[
-                  styles.avatar,
-                  { backgroundColor: getRandomLightMatteColor() },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.text,
-                    {
-                      color: isDarkMode
-                        ? theme.fontColors.white
-                        : theme.fontColors.black,
-                    },
-                  ]}
-                >
-                  {item.name.slice(0, 1)}
-                </Text>
-              </LinearGradient>
+              <Image
+                source={Avatar}
+                style={[styles.avatar]}
+                alt="avatar"
+              />
             )}
           </View>
           <Spacer width={widthPercentageToDP('2%')} />
@@ -404,7 +389,7 @@ const UserScreen = () => {
                     {
                       rotate: fadeAnim.interpolate({
                         inputRange: [0, 1],
-                        outputRange: ['0deg', '180deg'], 
+                        outputRange: ['0deg', '180deg'],
                       }),
                     },
                   ],
@@ -427,24 +412,24 @@ const UserScreen = () => {
           style={[styles.addNewUser]}
           onPress={handleAddNewUserClick}
         >
-                     <Animated.View
-                style={{
-                  transform: [
-                    {
-                      rotate: fadeAnim.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: ['0deg', '180deg'], 
-                      }),
-                    },
-                  ],
-                }}
-              >
-          <Icon
-            name="pencil"
-            size={20}
-            color={theme.fontColors.black}
-            style={styles.icon}
-          />
+          <Animated.View  
+            style={{
+              transform: [
+                {
+                  rotate: fadeAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: ['0deg', '180deg'],
+                  }),
+                },
+              ],
+            }}
+          >
+            <Icon
+              name="pencil"
+              size={20}
+              color={theme.fontColors.black}
+              style={styles.icon}
+            />
           </Animated.View>
         </TouchableOpacity>
       </Animated.View>
