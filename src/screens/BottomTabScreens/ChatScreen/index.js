@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useContext } from 'react';
-import { View, Text, Image, Platform } from 'react-native';
+import { View, Text, Image, Platform, Alert } from 'react-native';
 // Packages
 import { GiftedChat, Send, Bubble, InputToolbar, Composer } from 'react-native-gifted-chat';
 import firestore from '@react-native-firebase/firestore';
@@ -30,7 +30,7 @@ const ChatScreen = ({ navigation: { goBack } }) => {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const [formattedLastSeen, setFormattedLastSeen] = useState();
   const [isTyping, setIsTyping] = useState(false);
-  const [showComponent, setShowComponent] = useState(false);
+  const [showEmptyComp, setShowEmptyComp] = useState(false);
   const [isTypingStatus, setIsTypingStatus] = useState(false);
 
   fontTheme = isDarkMode ? theme.fontColors.white : theme.fontColors.black;
@@ -124,7 +124,7 @@ const ChatScreen = ({ navigation: { goBack } }) => {
       });
       setMessages(allmesg);
       dispatch(setMessagesStore(allmesg))
-      setShowComponent(true);
+      setShowEmptyComp(true);
 
     });
     return () => unsubscribe();
@@ -147,6 +147,13 @@ const ChatScreen = ({ navigation: { goBack } }) => {
 
 
 
+  const deleteMessage = (messageIdToDelete) => {
+    // Filter out the message to be deleted
+    // const updatedMessages = messages.filter(message => message._id !== messageIdToDelete);
+    // // Update the messages state with the filtered messages
+    // setMessages(updatedMessages);
+    // Optionally, you can perform any additional actions like making an API call to update the backend
+  };
 
   // Render send button
   const renderSend = (props) => (
@@ -162,6 +169,35 @@ const ChatScreen = ({ navigation: { goBack } }) => {
   );
 
   // Custom render message
+  const renderAvatar = (props) => {
+    const { currentMessage } = props;
+
+    return (
+      <View style={{ marginRight: 10 }}>
+        <Image
+          source={{ uri: route?.params?.data?.profileImage }}
+          resizeMode='contain'
+          style={styles.userAvatar}
+        />
+      </View>
+    );
+  };
+  const renderQuickReplies = (quickReplies) => {
+    return (
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        {quickReplies.map((reply, index) => (
+          <TouchableOpacity key={index} onPress={() => onQuickReply(reply)}>
+            <Text>{reply.title}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+  };
+  const onQuickReply = (replies) => {
+    // Handle the selected quick reply option
+    console.log("Selected quick reply:", replies);
+    // Optionally, you can send a message or perform other actions based on the selected quick reply
+  };
   const renderMessage = (props) => {
     const { currentMessage } = props;
     if (route.params.id) {
@@ -175,6 +211,9 @@ const ChatScreen = ({ navigation: { goBack } }) => {
             />
           )}
           <Bubble
+            //  onPress={() => handleLongPress(currentMessage._id)}
+            // onQuickReply={onQuickReply} 
+            //  renderQuickReplies={renderQuickReplies}
             {...props}
             wrapperStyle={{
               left: { backgroundColor: '#fefefefe', margin: 5 },
@@ -185,6 +224,8 @@ const ChatScreen = ({ navigation: { goBack } }) => {
               right: { color: '#fff' },
             }}
           />
+
+
         </View>
       );
     } else {
@@ -206,13 +247,13 @@ const ChatScreen = ({ navigation: { goBack } }) => {
 
   // useEffect(() => {
   //   const timeout = setTimeout(() => {
-  //     setShowComponent(true);
+  //     setShowEmptyComp(true);
   //   }, 1500);
   //   return () => clearTimeout(timeout);
   // }, []);
 
   const renderChatEmpty = () => {
-    return showComponent && (
+    return showEmptyComp && (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', transform: [{ rotate: '180deg' }] }}>
         <Image
           source={{ uri: "https://cdni.iconscout.com/illustration/premium/thumb/no-messages-8044859-6430768.png" }}
@@ -227,7 +268,24 @@ const ChatScreen = ({ navigation: { goBack } }) => {
     );
   };
 
-
+  const handleLongPress = (messageId) => {
+    Alert.alert(
+      "Delete Message",
+      "Are you sure you want to delete this message?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Delete",
+          // onPress: () => deleteMessage(messageId),
+          style: "destructive"
+        }
+      ],
+      { cancelable: true }
+    );
+  };
 
   const renderCustomActions = () => (
     <TouchableOpacity >
@@ -306,10 +364,12 @@ const ChatScreen = ({ navigation: { goBack } }) => {
           placeholderTextColor: '#dddd', // color of the placeholder text
           placeholder: 'Type your message...', // placeholder text
         }}
+        renderAvatar={renderAvatar}
         renderSend={renderSend}
         keyboardShouldPersistTaps="handled"
         renderMessage={renderMessage}
         renderChatEmpty={renderChatEmpty}
+        // onLongPress={() => handleLongPress()}  
         renderInputToolbar={renderInputToolbar}
         isTyping={isTypingStatus}
         onInputTextChanged={onInputTextChanged}
@@ -317,8 +377,8 @@ const ChatScreen = ({ navigation: { goBack } }) => {
           resizeMode: 'cover', // Example of a prop passed to the image component
           style: { width: 200, height: 150 }, // Example of styling applied to the image component
         }}
-        isLoadingEarlier={showComponent ? false : true}
-        loadEarlier={showComponent ? false : true}
+        isLoadingEarlier={showEmptyComp ? false : true}
+        loadEarlier={showEmptyComp ? false : true}
       />
     </View>
 

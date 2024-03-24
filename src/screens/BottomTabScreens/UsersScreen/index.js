@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
-import { Text, View, FlatList, TouchableOpacity, Animated, Image, Easing } from 'react-native';
+import { Text, View, FlatList, TouchableOpacity, Animated, Image, Easing, Alert } from 'react-native';
 
 // Packages
 import firestore from '@react-native-firebase/firestore';
@@ -100,37 +100,47 @@ const UserScreen = () => {
     try {
       const email = store[0].email;
       const tempData = [];
-
+  
       const usersSnapshot = await firestore()
         .collection('users')
         .where('email', '!=', email)
         .get();
-
+  
       for (const userDoc of usersSnapshot.docs) {
         const userData = userDoc.data();
-
+  
         // Fetch last message
         const lastMessageSnapshot = await firestore()
           .collection('chats')
           .doc(`${store[0].userID}${userData.userID}`)
           .collection('messages')
-          .orderBy('createdAt', 'desc')
+          .orderBy('createdAt', 'desc') // Order messages by createdAt in descending order (latest message first)
           .limit(1)
           .get();
-
+  
         const lastMessage =
           lastMessageSnapshot.docs.length > 0
             ? lastMessageSnapshot.docs[0].data()
             : null;
-
+  
         tempData.push({ ...userData, lastMessage });
       }
-
+  
+      // Sort the users based on the timestamp of the last message
+      tempData.sort((a, b) => {
+        const dateA = a.lastMessage ? new Date(a.lastMessage.createdAt) : new Date(0); // If lastMessage is null, use a default date
+        const dateB = b.lastMessage ? new Date(b.lastMessage.createdAt) : new Date(0); // If lastMessage is null, use a default date
+        
+        return dateB - dateA; // Sort in descending order (latest message first)
+      });
+  
       setUsers(tempData);
     } catch (error) {
       console.error('Error fetching users:', error);
     }
   };
+  
+
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -206,7 +216,37 @@ const UserScreen = () => {
     );
   };
 
-  renderBody = ({ item }) => {
+  const deleteUser = async (UserID) => {
+    const userStatusRef = firestore().collection('users').doc(UserID);
+    try {
+      await userStatusRef.delete();
+      console.log("User document deleted successfully.");
+      fetchUsers()
+    } catch (error) {
+      console.error("Error deleting user document:", error);
+    }
+  };
+  const handleLongPress = (messageId) => {
+    console.log(messageId, "messageId")
+    Alert.alert(
+      "Delete Message",
+      "Are you sure you want to delete this message?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Delete",
+          onPress: () => deleteUser(messageId?.userID),
+          style: "destructive"
+        }
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const renderBody = ({ item }) => {
     return (
       <View>
         <TouchableOpacity
@@ -216,6 +256,7 @@ const UserScreen = () => {
               : theme.backgroundColor.lightGray,
           },]}
           onPress={() => handleUserClick(item)}
+          onLongPress={() => handleLongPress(item)}
         >
           <View style={styles.avatarFrame} >
             {item.profileImage != null ? (
@@ -255,6 +296,7 @@ const UserScreen = () => {
                     : theme.fontColors.green,
                 },
               ]}
+              numberOfLines={1}
             >
 
               {item?.lastMessage ? item.lastMessage?.text : ''}
@@ -331,6 +373,7 @@ const UserScreen = () => {
       ]}
     >
       <FlatList
+        sort
         data={users}
         keyExtractor={item => item.userID}
         renderItem={renderBody}
@@ -412,7 +455,7 @@ const UserScreen = () => {
           style={[styles.addNewUser]}
           onPress={handleAddNewUserClick}
         >
-          <Animated.View  
+          <Animated.View
             style={{
               transform: [
                 {

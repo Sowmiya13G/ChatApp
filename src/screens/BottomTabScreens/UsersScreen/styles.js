@@ -17,12 +17,13 @@ export const styles = StyleSheet.create({
     flex: 1,
     position:"relative",
     flexDirection: 'row',
+    
     alignItems: 'center',
     // justifyContent:"center",
     padding: '3%',
     // backgroundColor: theme.backgroundColor.gray,
     marginVertical: 1,
-    height: "10%"
+    maxHeight: "100%"
     // borderRadius: wp('3%'),
     // margin: '4%',
     // marginBottom: '4%',
