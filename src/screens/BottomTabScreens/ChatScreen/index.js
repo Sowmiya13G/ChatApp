@@ -29,8 +29,8 @@ const ChatScreen = ({ navigation: { goBack } }) => {
   const dispatch = useDispatch();
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const [formattedLastSeen, setFormattedLastSeen] = useState();
-  const [currentUser, setCurrentUser] = useState(null);
   const [isTyping, setIsTyping] = useState(false);
+  const [showComponent, setShowComponent] = useState(false);
   const [isTypingStatus, setIsTypingStatus] = useState(false);
 
   fontTheme = isDarkMode ? theme.fontColors.white : theme.fontColors.black;
@@ -56,6 +56,35 @@ const ChatScreen = ({ navigation: { goBack } }) => {
     updateStatus()
   }, [isTyping])
 
+  const formatLastSeen = (lastSeen) => {
+    const currentDate = new Date();
+    const lastSeenDate = new Date(lastSeen);
+    const timeDifference = currentDate - lastSeenDate;
+    const seconds = Math.floor(timeDifference / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (seconds < 8) {
+      return 'Online';
+    }
+    else if (seconds < 60 || minutes < 30) {
+      return `Last Seen Recently`;
+    }
+    else if (minutes < 60) {
+      return `${minutes} ${minutes === 1 ? "Minute" : "Minutes"} ago`;
+    }
+    else if (hours < 24) {
+      return `${hours} ${hours === 1 ? "Hour" : "Hours"} ago`;
+    } else if (days === 1) {
+      return 'Yesterday';
+    } else {
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return new Date(lastSeen).toLocaleString('en-US', options);
+      // return 'Online';
+
+    }
+  };
 
 
 
@@ -84,6 +113,7 @@ const ChatScreen = ({ navigation: { goBack } }) => {
 
   useEffect(() => {
     const query = firestore()
+
       .collection('chats')
       .doc(route.params.id + route.params.data.userID)
       .collection('messages')
@@ -94,6 +124,8 @@ const ChatScreen = ({ navigation: { goBack } }) => {
       });
       setMessages(allmesg);
       dispatch(setMessagesStore(allmesg))
+      setShowComponent(true);
+
     });
     return () => unsubscribe();
   }, []);
@@ -102,7 +134,18 @@ const ChatScreen = ({ navigation: { goBack } }) => {
     dispatch(ToDetails(route));
   }, [route]);
 
-  // Render UI..........
+  useEffect(() => {
+    const query = firestore()
+      .collection('users')
+      .doc(route.params.data.userID)
+    const unsubscribe = query.onSnapshot(userDoc => {
+      setFormattedLastSeen(formatLastSeen(userDoc.data()?.lastSeen))
+      setIsTypingStatus(userDoc.data()?.isTyping)
+    });
+    return () => unsubscribe();
+  }, [new Date()]);
+
+
 
 
   // Render send button
@@ -127,6 +170,7 @@ const ChatScreen = ({ navigation: { goBack } }) => {
           {currentMessage.user._id !== route.params.id && (
             <Image
               source={{ uri: route?.params?.data?.profileImage }}
+              resizeMode='contain'
               style={styles.userAvatar}
             />
           )}
@@ -148,63 +192,8 @@ const ChatScreen = ({ navigation: { goBack } }) => {
     }
   };
 
-  const fetchCurrentUser = async () => {
-    try {
-      const userDoc = await firestore().collection('users').doc(route.params.data.userID).get();
-      if (userDoc.exists) {
-        setCurrentUser(userDoc.data());
-        setIsTypingStatus(userDoc.data()?.isTyping)
-        console.log(userDoc.data()?.isTyping, 'User document not found');
-      } else {
-        console.log('User document not found');
-      }
-    } catch (error) {
-      console.error('Error fetching current user:', error);
-    }
-  };
 
-  const formatLastSeen = (lastSeen) => {
-    const currentDate = new Date();
-    const lastSeenDate = new Date(lastSeen);
-    const timeDifference = currentDate - lastSeenDate;
-    const seconds = Math.floor(timeDifference / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
 
-    if (seconds < 5) {
-      return 'Online';
-    }
-    else if (seconds < 60 || minutes < 30) {
-      return `Last seen Recently`;
-    }
-    else if (minutes < 60) {
-      return `${minutes} ${minutes === 1 ? "Minute" : "Minutes"} ago`;
-    }
-    else if (hours < 24) {
-      return `${hours}Hour ago`;
-    } else if (days === 1) {
-      return 'Yesterday';
-    } else {
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
-      return new Date(lastSeen).toLocaleString('en-US', options);
-      // return 'Online';
-
-    }
-  };
-  useEffect(() => {
-    fetchCurrentUser()
-  }, [])
-  // ... (rest of your component)
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      fetchCurrentUser()
-      const formattedTime = formatLastSeen(currentUser.lastSeen);
-      setFormattedLastSeen(formattedTime);
-    }, 3000);
-
-    return () => clearInterval(intervalId);
-  }, [route.params.data.lastSeen, new Date()]);
 
 
   const onInputTextChanged = (text) => {
@@ -215,18 +204,30 @@ const ChatScreen = ({ navigation: { goBack } }) => {
     }
   };
 
-  const renderChatEmpty = () => (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', transform: [{ rotate: '180deg' }] }}>
-      <Image source={{ uri: "https://cdni.iconscout.com/illustration/premium/thumb/no-messages-8044859-6430768.png" }}
-        style={{
-          width: widthPercentageToDP("40%"),
-          height: widthPercentageToDP("40%")
-        }}
-        resizeMode='contain'
-      />
-      <Text>No messages yet.</Text>
-    </View>
-  );
+  // useEffect(() => {
+  //   const timeout = setTimeout(() => {
+  //     setShowComponent(true);
+  //   }, 1500);
+  //   return () => clearTimeout(timeout);
+  // }, []);
+
+  const renderChatEmpty = () => {
+    return showComponent && (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', transform: [{ rotate: '180deg' }] }}>
+        <Image
+          source={{ uri: "https://cdni.iconscout.com/illustration/premium/thumb/no-messages-8044859-6430768.png" }}
+          style={{
+            width: widthPercentageToDP("40%"),
+            height: widthPercentageToDP("40%")
+          }}
+          resizeMode='contain'
+        />
+        <Text style={{ color: "#000" }}> No messages yet.</Text>
+      </View>
+    );
+  };
+
+
 
   const renderCustomActions = () => (
     <TouchableOpacity >
@@ -285,6 +286,7 @@ const ChatScreen = ({ navigation: { goBack } }) => {
       <GiftedChat
         messages={messages}
         onSend={messages => onSend(messages)}
+        infiniteScroll={true}
         user={{
           _id: route.params.id,
         }}
@@ -315,7 +317,8 @@ const ChatScreen = ({ navigation: { goBack } }) => {
           resizeMode: 'cover', // Example of a prop passed to the image component
           style: { width: 200, height: 150 }, // Example of styling applied to the image component
         }}
-
+        isLoadingEarlier={showComponent ? false : true}
+        loadEarlier={showComponent ? false : true}
       />
     </View>
 

@@ -78,7 +78,7 @@ const AppNavigator = () => {
       const intervalId = setInterval(() => {
         // Call updateStatus every minute
         updateStatus(true);
-      }, 60000);
+      }, 3000);
       return () => {
         unsubscribeNetwork();
         clearInterval(intervalId);
@@ -96,7 +96,7 @@ const AppNavigator = () => {
       }
     }
 
-  }, [userData, Date()]);
+  }, [userData, new Date()]);
 
   const initialRouteName = () => {
     return userData.length > 0 ? 'UserScreen' : 'SignupScreen';
@@ -106,7 +106,7 @@ const AppNavigator = () => {
     const routeName = initialRouteName();
     console.log(routeName);
   }, [userData])
-  
+
   return (
     <View style={{ flex: 1, backgroundColor: '#000' }}>
       <StatusBar

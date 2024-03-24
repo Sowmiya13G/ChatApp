@@ -38,6 +38,7 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'flex-end',
         marginLeft: 10,
+        marginBottom:10,
     },
     userAvatar: {
         width: wp('8%'),

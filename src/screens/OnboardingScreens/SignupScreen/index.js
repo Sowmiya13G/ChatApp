@@ -45,7 +45,7 @@ const SignupScreen = () => {
         name: nameValue,
         confirmPassword: confirmPassword,
         userID: UserID,
-        profileImage: null
+        profileImage: "https://firebasestorage.googleapis.com/v0/b/chatapp-2ff01.appspot.com/o/profile_images%2F48fa7767-0248-41ef-9b4c-fb07e684fbfe.jpg?alt=media&token=cd89d15f-e904-4e06-94d6-4947fdd6ff77"
       })
       .then(resp => {
         console.log(resp);
