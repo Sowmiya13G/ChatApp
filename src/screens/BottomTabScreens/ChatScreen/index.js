@@ -14,6 +14,9 @@ import theme from '../../../constants/theme';
 import { ThemeContext } from '../../../utils/themeContext';
 import Avatar from '../../../assets/Imags/avatar.webp';
 import sendIcon from '../../../assets/Imags/send.png';
+import SingleTick from '../../../assets/Imags/singleTick.png';
+import DoubleTick from '../../../assets/Imags/doubleTick.png';
+
 
 
 //Styles
@@ -96,6 +99,7 @@ const ChatScreen = ({ navigation: { goBack } }) => {
       sendBy: route.params.id,
       sendTo: route.params.data.userID,
       createdAt: Date(),
+      readed: false
     };
     firestore()
       .collection('chats')
@@ -108,6 +112,27 @@ const ChatScreen = ({ navigation: { goBack } }) => {
       .collection('messages')
       .add(myMSG);
     setIsTyping(false);
+  }, []);
+
+  const markChatAsRead = async () => {
+    // Get the last message in the chat
+    const lastMessageQuery = await firestore()
+      .collection('chats')
+      .doc(route.params.data.userID + route.params.id)
+      .collection('messages')
+      .orderBy('createdAt', 'desc')
+      .limit(1)
+      .get();
+
+    // Update the readed field of the last message to true
+    if (!lastMessageQuery.empty) {
+      const lastMessageDoc = lastMessageQuery.docs[0];
+      await lastMessageDoc.ref.update({ readed: true });
+    }
+  };
+
+  useEffect(() => {
+    markChatAsRead();
   }, []);
 
 
@@ -198,8 +223,22 @@ const ChatScreen = ({ navigation: { goBack } }) => {
     console.log("Selected quick reply:", replies);
     // Optionally, you can send a message or perform other actions based on the selected quick reply
   };
+
+
   const renderMessage = (props) => {
     const { currentMessage } = props;
+    const renderTicksAlways = () => {
+      if (!currentMessage) return null; // Add null check to handle undefined currentMessage
+      return (
+        <View style={{ marginRight: 5 }}>
+          {currentMessage.user._id === route.params.id &&
+            // <Image style={{ width: widthPercentageToDP("5%"), height: widthPercentageToDP("5%") }} resizeMode='contain' source={!currentMessage.readed ? SingleTick : DoubleTick} />
+
+            <Text style={{ marginRight: 5, marginBottom: 2, bottom: 6, color: currentMessage.readed ? "#4AB7F3" : "grey" }}>{currentMessage.readed == true ? "✓✓" : "✓"}</Text>}
+        </View>
+      );
+    };
+    if (!currentMessage) return null; // Add null check to handle undefined currentMessage
     if (route.params.id) {
       return (
         <View style={styles.messageContainer}>
@@ -211,10 +250,8 @@ const ChatScreen = ({ navigation: { goBack } }) => {
             />
           )}
           <Bubble
-            //  onPress={() => handleLongPress(currentMessage._id)}
-            // onQuickReply={onQuickReply} 
-            //  renderQuickReplies={renderQuickReplies}
             {...props}
+            renderTicks={renderTicksAlways}
             wrapperStyle={{
               left: { backgroundColor: '#fefefefe', margin: 5 },
               right: { backgroundColor: '#22313f', margin: 5 },
@@ -223,13 +260,12 @@ const ChatScreen = ({ navigation: { goBack } }) => {
               left: { color: '#000' },
               right: { color: '#fff' },
             }}
+            tickStyle={{ color: 'green', fontSize: 20 }}
           />
-
-
         </View>
       );
     } else {
-      return <Bubble {...props} />;
+      return <Bubble {...props} renderTicks={renderTicksAlways} />;
     }
   };
 
