@@ -1,4 +1,4 @@
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 const userSlice = createSlice({
   name: 'users',
@@ -7,10 +7,14 @@ const userSlice = createSlice({
     ToDetails: [],
     messages: [],
     profileImage: null,
+    userMessageLog: [],
   },
   reducers: {
     setUserData: (state = userSlice.initialState, action) => {
       state.userData = action.payload
+    },
+    setUserDataMesssage: (state = userSlice.initialState, action) => {
+      state.userMessageLog = action.payload
     },
     ToDetails: (state = userSlice.initialState, action) => {
       state.ToDetails = action.payload;
@@ -24,5 +28,11 @@ const userSlice = createSlice({
   },
 });
 
-export const {setUserData, ToDetails, setProfileImage,setMessagesStore} = userSlice.actions;
+export const {
+  setUserData,
+  ToDetails,
+  setProfileImage,
+  setMessagesStore,
+  setUserDataMesssage
+} = userSlice.actions;
 export default userSlice.reducer;

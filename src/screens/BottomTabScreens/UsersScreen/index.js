@@ -12,7 +12,7 @@ import {
 } from 'react-native-responsive-screen';
 
 // Redux
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // Constants
 import Avatar from '../../../assets/Imags/avatar.webp';
@@ -24,19 +24,23 @@ import Spacer from '../../../components/Spacer';
 
 // Styles
 import { styles } from './styles';
+import { setUserDataMesssage } from '../../../redux/features/userSlice';
 
 const UserScreen = () => {
+  const dispatch = useDispatch()
   // Variables
+  const stored = useSelector(state => state.users.userMessageLog);
   const navigation = useNavigation();
   const { isDarkMode } = useContext(ThemeContext);
   fontTheme = isDarkMode ? theme.fontColors.white : theme.fontColors.black;
 
   // Use State
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState(stored || []);
   const [showIcons, setShowIcons] = useState(false);
 
   // Redux Selector
   const store = useSelector(state => state.users.userData);
+
 
   // Fade-in and Fade-out Animations
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -99,75 +103,118 @@ const UserScreen = () => {
 
 
 
-  const fetchUsers = async () => {
-    try {
-      const email = store[0].email;
-      const tempData = [];
-
-      const usersSnapshot = await firestore()
-        .collection('users')
-        .where('email', '!=', email)
-        .get();
-
-      for (const userDoc of usersSnapshot.docs) {
-        const userData = userDoc.data();
-
-        // Fetch last message
-        const lastMessageSnapshot = await firestore()
-          .collection('chats')
-          .doc(`${store[0].userID}${userData.userID}`)
-          .collection('messages')
-          .orderBy('createdAt', 'desc') // Order messages by createdAt in descending order (latest message first)
-          .limit(1)
-          .get();
-
-        const lastMessage =
-          lastMessageSnapshot.docs.length > 0
-            ? lastMessageSnapshot.docs[0].data()
-            : null;
-
-        // Fetch unread messages count
-        const unreadMessagesSnapshot = await firestore()
-          .collection('chats')
-          .doc(`${userData.userID}${store[0].userID}`)
-          .collection('messages')
-          .where('readed', '==', false)
-          .get();
-
-        const unreadMessagesCount = unreadMessagesSnapshot.size;
-
-        tempData.push({ ...userData, lastMessage, unreadMessagesCount });
-      }
-      tempData.sort((a, b) => {
-        const dateA = a.lastMessage ? new Date(a.lastMessage.createdAt) : new Date(0); // If lastMessage is null, use a default date
-        const dateB = b.lastMessage ? new Date(b.lastMessage.createdAt) : new Date(0); // If lastMessage is null, use a default date
-
-        return dateB - dateA;
-      });
-
-      setUsers(tempData);
-    } catch (error) {
-      console.error('Error fetching users:', error);
-    }
-  };
 
 
+  // const fetchUsers = async () => {
+  //   try {
+  //     const email = store[0].email;
+  //     const tempData = [];
+  //     const batch = firestore().batch(); // Initialize batch
+
+  //     const usersSnapshot = await firestore().collection('users').where('email', '!=', email).get();
+
+  //     for (const userDoc of usersSnapshot.docs) {
+  //       const userData = userDoc.data();
+  //       const chatDocRef = firestore().collection('chats').doc(`${store[0].userID}${userData.userID}`);
+  //       const userChatRef = chatDocRef.collection('messages');
+
+  //       // Fetch last message
+  //       const lastMessageQuery =await userChatRef.orderBy('createdAt', 'desc').limit(1).get();
+  //       const lastMessage = lastMessageQuery.docs.length > 0 ? lastMessageQuery.docs[0].data() : null;
+
+  //       // Fetch unread messages count
+  //       const unreadMessagesQuery = await userChatRef.where('readed', '==', false).get();
+  //       const unreadMessagesCount = unreadMessagesQuery.size;
+
+  //       // Add operations to batch (optional)
+  //       // batch.update(chatDocRef, { lastMessage }); // Example if you want to update a document in batch
+
+  //       tempData.push({ ...userData, lastMessage, unreadMessagesCount });
+  //     }
+
+  //     // Commit batched operations (optional)
+  //     // await batch.commit();
+
+  //     tempData.sort((a, b) => {
+  //       const dateA = a.lastMessage ? new Date(a.lastMessage.createdAt) : new Date(0);
+  //       const dateB = b.lastMessage ? new Date(b.lastMessage.createdAt) : new Date(0);
+  //       return dateB - dateA;
+  //     });
+
+  //     setUsers(tempData);
+  //   } catch (error) {
+  //     console.error('Error fetching users:', error);
+  //   }
+  // };
 
 
   useEffect(() => {
     const email = store[0].email;
-    const query = firestore()
-      .collection('users')
-      .where('email', '!=', email);
+    const query = firestore().collection('users').where('email', '!=', email);
 
+    const fetchUsers = async (query) => {
+      try {
+        const tempData = [];
+
+        // Get users based on the provided query
+        const usersSnapshot = await query.get();
+
+        // Fetch last message and unread messages count for each user
+        for (const userDoc of usersSnapshot.docs) {
+          const userData = userDoc.data();
+          const userId = userData.userID;
+
+          // Fetch last message
+          const lastMessageSnapshot = await firestore()
+            .collection('chats')
+            .doc(`${store[0].userID}${userId}`)
+            .collection('messages')
+            .orderBy('createdAt', 'desc')
+            .limit(1)
+            .get();
+
+          const lastMessage = lastMessageSnapshot.docs.length > 0 ? lastMessageSnapshot.docs[0].data() : null;
+
+          // Fetch unread messages count
+          const unreadMessagesSnapshot = await firestore()
+            .collection('chats')
+            .doc(`${userId}${store[0].userID}`)
+            .collection('messages')
+            .where('readed', '==', false)
+            .get();
+
+          const unreadMessagesCount = unreadMessagesSnapshot.size;
+
+          // Push user data along with last message and unread messages count to tempData array
+          tempData.push({ ...userData, lastMessage, unreadMessagesCount });
+        }
+
+        // Sort users based on the timestamp of the last message
+        tempData.sort((a, b) => {
+          const dateA = a.lastMessage ? new Date(a.lastMessage.createdAt) : new Date(0);
+          const dateB = b.lastMessage ? new Date(b.lastMessage.createdAt) : new Date(0);
+          return dateB - dateA;
+        });
+
+        // Update state with fetched users
+        setUsers(tempData);
+        dispatch(setUserDataMesssage(tempData))
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    // Listen to changes in the users collection and fetch users
     const unsubscribe = query.onSnapshot((snapshot) => {
-      fetchUsers();
+      fetchUsers(query);
     });
 
+    // Unsubscribe from snapshot listener when component unmounts
     return () => {
       unsubscribe();
     };
   }, []);
+
 
 
 
@@ -242,7 +289,7 @@ const UserScreen = () => {
     try {
       await userStatusRef.delete();
       console.log("User document deleted successfully.");
-      fetchUsers()
+      // fetchUsers()
     } catch (error) {
       console.error("Error deleting user document:", error);
     }
@@ -404,7 +451,6 @@ const UserScreen = () => {
       ]}
     >
       <FlatList
-        sort
         data={users}
         keyExtractor={item => item.userID}
         renderItem={renderBody}
