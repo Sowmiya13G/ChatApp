@@ -15,9 +15,9 @@ export const styles = StyleSheet.create({
   },
   chatList: {
     flex: 1,
-    position:"relative",
+    position: "relative",
     flexDirection: 'row',
-    
+
     alignItems: 'center',
     // justifyContent:"center",
     padding: '3%',
@@ -30,24 +30,25 @@ export const styles = StyleSheet.create({
   },
 
   avatar: {
-    width:40,
-    height:40,
+    width: 40,
+    height: 40,
     borderRadius: 50,
     marginRight: 10,
-  
-  },
-  msgDate: {
-    position:"absolute",
-    top:"15%",
-    right:"3%",
-display:"flex"
 
   },
-  sentIcon:{
-  position:"absolute",
-  top:"80%",
-  left:"80%",
-display:"flex"
+  msgDate: {
+    position: "absolute",
+    top: "15%",
+    right: "3%",
+    display: "flex",
+    alignItems:"flex-end"
+
+  },
+  sentIcon: {
+    position: "absolute",
+    top: "80%",
+    left: "80%",
+    display: "flex"
   },
   msgTime: {
     alignItems: 'flex-end',

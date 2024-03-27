@@ -96,19 +96,22 @@ const UserScreen = () => {
   //     console.error('Error fetching users:', error);
   //   }
   // };
+
+
+
   const fetchUsers = async () => {
     try {
       const email = store[0].email;
       const tempData = [];
-  
+
       const usersSnapshot = await firestore()
         .collection('users')
         .where('email', '!=', email)
         .get();
-  
+
       for (const userDoc of usersSnapshot.docs) {
         const userData = userDoc.data();
-  
+
         // Fetch last message
         const lastMessageSnapshot = await firestore()
           .collection('chats')
@@ -117,39 +120,56 @@ const UserScreen = () => {
           .orderBy('createdAt', 'desc') // Order messages by createdAt in descending order (latest message first)
           .limit(1)
           .get();
-  
+
         const lastMessage =
           lastMessageSnapshot.docs.length > 0
             ? lastMessageSnapshot.docs[0].data()
             : null;
-  
-        tempData.push({ ...userData, lastMessage });
+
+        // Fetch unread messages count
+        const unreadMessagesSnapshot = await firestore()
+          .collection('chats')
+          .doc(`${userData.userID}${store[0].userID}`)
+          .collection('messages')
+          .where('readed', '==', false)
+          .get();
+
+        const unreadMessagesCount = unreadMessagesSnapshot.size;
+
+        tempData.push({ ...userData, lastMessage, unreadMessagesCount });
       }
-  
-      // Sort the users based on the timestamp of the last message
       tempData.sort((a, b) => {
         const dateA = a.lastMessage ? new Date(a.lastMessage.createdAt) : new Date(0); // If lastMessage is null, use a default date
         const dateB = b.lastMessage ? new Date(b.lastMessage.createdAt) : new Date(0); // If lastMessage is null, use a default date
-        
-        return dateB - dateA; // Sort in descending order (latest message first)
+
+        return dateB - dateA;
       });
-  
+
       setUsers(tempData);
     } catch (error) {
       console.error('Error fetching users:', error);
     }
   };
-  
+
+
 
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      fetchUsers();
-    }, 2000);
+    const email = store[0].email;
+    const query = firestore()
+      .collection('users')
+      .where('email', '!=', email);
 
-    // Clear the interval when the component unmounts
-    // return () => clearInterval(timer);
+    const unsubscribe = query.onSnapshot((snapshot) => {
+      fetchUsers();
+    });
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
+
+
 
 
   const handleUserClick = (item) => {
@@ -216,6 +236,7 @@ const UserScreen = () => {
     );
   };
 
+
   const deleteUser = async (UserID) => {
     const userStatusRef = firestore().collection('users').doc(UserID);
     try {
@@ -226,6 +247,7 @@ const UserScreen = () => {
       console.error("Error deleting user document:", error);
     }
   };
+
   const handleLongPress = (messageId) => {
     console.log(messageId, "messageId")
     Alert.alert(
@@ -291,9 +313,12 @@ const UserScreen = () => {
               style={[
                 styles.textmsg,
                 {
-                  color: item?.lastMessage?.sendBy == store[0]?.userID
-                    ? theme.fontColors.hexGray
-                    : theme.fontColors.green,
+                  color:
+                    theme.fontColors.hexGray
+
+                  // color: item?.lastMessage?.sendBy == store[0]?.userID
+                  //   ? theme.fontColors.hexGray
+                  //   : theme.fontColors.green,
                 },
               ]}
               numberOfLines={1}
@@ -304,7 +329,13 @@ const UserScreen = () => {
           </View>
 
           <View style={styles.msgDate} >
-            {item?.lastMessage !== null ? item?.lastMessage?.sendBy == store[0]?.userID ?
+            {item?.unreadMessagesCount !== 0 && (
+              <View style={{ backgroundColor: "#388e3c", justifyContent: "center", alignItems: "center", borderRadius: 50, width: widthPercentageToDP("5%"), height: widthPercentageToDP("5%") }}>
+                <Text style={{ color: "#fff", paddingHorizontal: 2 }}>{item?.unreadMessagesCount}</Text>
+              </View>
+            )}
+
+            {/* {item?.lastMessage !== null ? item?.lastMessage?.sendBy == store[0]?.userID ?
 
               <Icon
                 name="angle-double-right"
@@ -318,10 +349,10 @@ const UserScreen = () => {
               <Icon
                 name="angle-double-left"
                 size={20}
-                color={theme.fontColors.black}
+                color={"#388e3c"}
                 style={styles.sentIcon}
               /> : ""
-            }
+            } */}
             <Text
               style={[
                 styles.msgTime,

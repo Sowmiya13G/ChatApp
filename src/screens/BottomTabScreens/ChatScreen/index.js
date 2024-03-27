@@ -14,9 +14,6 @@ import theme from '../../../constants/theme';
 import { ThemeContext } from '../../../utils/themeContext';
 import Avatar from '../../../assets/Imags/avatar.webp';
 import sendIcon from '../../../assets/Imags/send.png';
-import SingleTick from '../../../assets/Imags/singleTick.png';
-import DoubleTick from '../../../assets/Imags/doubleTick.png';
-
 
 
 //Styles
@@ -115,30 +112,27 @@ const ChatScreen = ({ navigation: { goBack } }) => {
   }, []);
 
   const markChatAsRead = async () => {
-    // Get the last message in the chat
-    const lastMessageQuery = await firestore()
+    const messagesQuery = await firestore()
       .collection('chats')
       .doc(route.params.data.userID + route.params.id)
       .collection('messages')
-      .orderBy('createdAt', 'desc')
-      .limit(1)
       .get();
-
-    // Update the readed field of the last message to true
-    if (!lastMessageQuery.empty) {
-      const lastMessageDoc = lastMessageQuery.docs[0];
-      await lastMessageDoc.ref.update({ readed: true });
-    }
+  
+    // Update the readed field of all messages to true
+    const batch = firestore().batch();
+    messagesQuery.forEach((doc) => {
+      batch.update(doc.ref, { readed: true });
+    });
+  
+    await batch.commit();
   };
+  
 
-  useEffect(() => {
-    markChatAsRead();
-  }, []);
+
 
 
   useEffect(() => {
     const query = firestore()
-
       .collection('chats')
       .doc(route.params.id + route.params.data.userID)
       .collection('messages')
@@ -149,8 +143,8 @@ const ChatScreen = ({ navigation: { goBack } }) => {
       });
       setMessages(allmesg);
       dispatch(setMessagesStore(allmesg))
+      markChatAsRead();
       setShowEmptyComp(true);
-
     });
     return () => unsubscribe();
   }, []);
@@ -227,14 +221,14 @@ const ChatScreen = ({ navigation: { goBack } }) => {
 
   const renderMessage = (props) => {
     const { currentMessage } = props;
+    const readedMessage = currentMessage.readed
     const renderTicksAlways = () => {
       if (!currentMessage) return null; // Add null check to handle undefined currentMessage
       return (
         <View style={{ marginRight: 5 }}>
           {currentMessage.user._id === route.params.id &&
             // <Image style={{ width: widthPercentageToDP("5%"), height: widthPercentageToDP("5%") }} resizeMode='contain' source={!currentMessage.readed ? SingleTick : DoubleTick} />
-
-            <Text style={{ marginRight: 5, marginBottom: 2, bottom: 6, color: currentMessage.readed ? "#4AB7F3" : "grey" }}>{currentMessage.readed == true ? "✓✓" : "✓"}</Text>}
+            <Text style={{ marginRight: 5, marginBottom: 2, bottom: 6, color: readedMessage ? "#4AB7F3" : "grey" }}>{readedMessage == true ? "✓✓" : "✓"}</Text>}
         </View>
       );
     };
