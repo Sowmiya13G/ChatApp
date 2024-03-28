@@ -164,7 +164,7 @@ const UserScreen = () => {
           // Fetch last message
           const lastMessagePromise = firestore()
             .collection('chats')
-            .doc(`${store[0].userID}${userId}`)
+            .doc(`${userId}${store[0].userID}`)
             .collection('messages')
             .orderBy('createdAt', 'desc')
             .limit(1)
@@ -385,7 +385,7 @@ const UserScreen = () => {
           <View style={styles.msgDate} >
             {item?.unreadMessagesCount !== 0 && (
               <View style={{ backgroundColor: "#388e3c", justifyContent: "center", alignItems: "center", borderRadius: 50, width: widthPercentageToDP("5%"), height: widthPercentageToDP("5%") }}>
-                <Text style={{ color: "#fff", paddingHorizontal: 2 }}>{item?.unreadMessagesCount}</Text>
+                <Text style={{ color: "#fff", paddingHorizontal: 2,fontSize:10 }}>{item?.unreadMessagesCount}</Text>
               </View>
             )}
 
