@@ -117,16 +117,16 @@ const ChatScreen = ({ navigation: { goBack } }) => {
       .doc(route.params.data.userID + route.params.id)
       .collection('messages')
       .get();
-  
+
     // Update the readed field of all messages to true
     const batch = firestore().batch();
     messagesQuery.forEach((doc) => {
       batch.update(doc.ref, { readed: true });
     });
-  
+
     await batch.commit();
   };
-  
+
 
 
 
@@ -162,7 +162,7 @@ const ChatScreen = ({ navigation: { goBack } }) => {
       setIsTypingStatus(userDoc.data()?.isTyping)
     });
     return () => unsubscribe();
-  }, [new Date()]);
+  }, []);
 
 
 
@@ -374,7 +374,7 @@ const ChatScreen = ({ navigation: { goBack } }) => {
       <GiftedChat
         messages={messages}
         onSend={messages => onSend(messages)}
-        infiniteScroll={true}
+        // infiniteScroll={true}
         user={{
           _id: route.params.id,
         }}

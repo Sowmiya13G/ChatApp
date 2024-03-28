@@ -151,69 +151,76 @@ const UserScreen = () => {
   useEffect(() => {
     const email = store[0].email;
     const query = firestore().collection('users').where('email', '!=', email);
-
+  
     const fetchUsers = async (query) => {
       try {
         const tempData = [];
-
-        // Get users based on the provided query
         const usersSnapshot = await query.get();
-
-        // Fetch last message and unread messages count for each user
-        for (const userDoc of usersSnapshot.docs) {
+    
+        const fetchUserTasks = usersSnapshot.docs.map(async (userDoc) => {
           const userData = userDoc.data();
           const userId = userData.userID;
-
+    
           // Fetch last message
-          const lastMessageSnapshot = await firestore()
+          const lastMessagePromise = firestore()
             .collection('chats')
             .doc(`${store[0].userID}${userId}`)
             .collection('messages')
             .orderBy('createdAt', 'desc')
             .limit(1)
             .get();
-
-          const lastMessage = lastMessageSnapshot.docs.length > 0 ? lastMessageSnapshot.docs[0].data() : null;
-
+    
           // Fetch unread messages count
-          const unreadMessagesSnapshot = await firestore()
+          const unreadMessagesPromise = firestore()
             .collection('chats')
             .doc(`${userId}${store[0].userID}`)
             .collection('messages')
             .where('readed', '==', false)
             .get();
-
+    
+          // Wait for both promises to resolve
+          const [lastMessageSnapshot, unreadMessagesSnapshot] = await Promise.all([
+            lastMessagePromise,
+            unreadMessagesPromise
+          ]);
+    
+          const lastMessage = lastMessageSnapshot.docs.length > 0 ? lastMessageSnapshot.docs[0].data() : null;
           const unreadMessagesCount = unreadMessagesSnapshot.size;
-
-          // Push user data along with last message and unread messages count to tempData array
-          tempData.push({ ...userData, lastMessage, unreadMessagesCount });
-        }
-
+    
+          // Return user data along with last message and unread messages count
+          return { ...userData, lastMessage, unreadMessagesCount };
+        });
+    
+        // Execute all fetch tasks concurrently
+        const fetchedUsers = await Promise.all(fetchUserTasks);
+    
         // Sort users based on the timestamp of the last message
-        tempData.sort((a, b) => {
+        fetchedUsers.sort((a, b) => {
           const dateA = a.lastMessage ? new Date(a.lastMessage.createdAt) : new Date(0);
           const dateB = b.lastMessage ? new Date(b.lastMessage.createdAt) : new Date(0);
           return dateB - dateA;
         });
-
+    
         // Update state with fetched users
-        setUsers(tempData);
-        dispatch(setUserDataMesssage(tempData))
+        setUsers(fetchedUsers);
+        dispatch(setUserDataMesssage(fetchedUsers));
       } catch (error) {
         console.error('Error fetching users:', error);
       }
     };
-
+    
+  
     // Listen to changes in the users collection and fetch users
     const unsubscribe = query.onSnapshot((snapshot) => {
       fetchUsers(query);
     });
-
+  
     // Unsubscribe from snapshot listener when component unmounts
     return () => {
       unsubscribe();
     };
   }, []);
+  
 
 
 
